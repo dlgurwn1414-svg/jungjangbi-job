@@ -7,6 +7,41 @@ import DeleteJobButton from "@/components/DeleteJobButton";
 import JobStatusButton from "@/components/JobStatusButton";
 import { createClient } from "@/lib/supabase/server";
 
+type JobSummary = {
+  id: number;
+  title: string | null;
+  company: string | null;
+  location: string | null;
+  equipment: string | null;
+  salary: string | null;
+  experience: string | null;
+  urgent: boolean | null;
+  status: string | null;
+};
+
+type WorkerSummary = {
+  id: number;
+  name: string | null;
+  region: string | null;
+  equipment: string | null;
+  experience_years: number | null;
+  desired_salary: string | null;
+};
+
+function getSingleRelation<T>(
+  value: T | T[] | null | undefined
+): T | null {
+  if (!value) {
+    return null;
+  }
+
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value;
+}
+
 export default async function MyPage() {
   const supabase = await createClient();
 
@@ -296,11 +331,12 @@ export default async function MyPage() {
                     job.applications?.length ?? 0;
 
                   const newApplicantCount =
-                    job.applications?.filter(
-                      (application) =>
-                        application.owner_seen === false
-                    ).length ?? 0;
-
+  job.applications?.filter(
+    (application: {
+      owner_seen: boolean | null;
+    }) =>
+      application.owner_seen === false
+  ).length ?? 0;
                   const isClosed =
                     job.status === "closed";
 
@@ -457,11 +493,14 @@ export default async function MyPage() {
             ) : (
               <div className="mt-6 grid gap-4 md:grid-cols-2">
                 {favorites.map((favorite) => {
-                  const job = favorite.jobs;
+  const job =
+    getSingleRelation<JobSummary>(
+      favorite.jobs
+    );
 
-                  if (!job) {
-                    return null;
-                  }
+  if (!job) {
+    return null;
+  }
 
                   const isClosed =
                     job.status === "closed";
@@ -577,12 +616,14 @@ export default async function MyPage() {
             ) : (
               <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {favoriteWorkers.map((favorite) => {
-                  const worker =
-                    favorite.worker_profiles;
+  const worker =
+    getSingleRelation<WorkerSummary>(
+      favorite.worker_profiles
+    );
 
-                  if (!worker) {
-                    return null;
-                  }
+  if (!worker) {
+    return null;
+  }
 
                   return (
                     <Link
@@ -666,11 +707,14 @@ export default async function MyPage() {
   ) : (
     <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {recentJobs.map((recent) => {
-        const job = recent.jobs;
+  const job =
+    getSingleRelation<JobSummary>(
+      recent.jobs
+    );
 
-        if (!job) {
-          return null;
-        }
+  if (!job) {
+    return null;
+  }
 
         const isClosed = job.status === "closed";
 
@@ -787,11 +831,14 @@ export default async function MyPage() {
             ) : (
               <div className="mt-6 grid gap-4 md:grid-cols-2">
                 {applications.map((application) => {
-                  const job = application.jobs;
+  const job =
+    getSingleRelation<JobSummary>(
+      application.jobs
+    );
 
-                  if (!job) {
-                    return null;
-                  }
+  if (!job) {
+    return null;
+  }
 
                   const isClosed =
                     job.status === "closed";

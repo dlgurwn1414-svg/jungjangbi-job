@@ -27,6 +27,7 @@ export default async function WorkerDetailPage({
       name,
       phone,
       region,
+      sub_region,
       equipment,
       experience_years,
       licenses,
