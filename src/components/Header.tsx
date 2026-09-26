@@ -12,18 +12,6 @@ export default async function Header() {
   } = await supabase.auth.getUser();
 
   let isAdmin = false;
-
-if (user) {
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("is_admin")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  isAdmin = profile?.is_admin === true;
-}
-
-
   let newApplicantCount = 0;
 
   if (user) {
@@ -36,14 +24,16 @@ if (user) {
 
     isAdmin = profile?.is_admin === true;
 
-    // 새 지원자 알림 개수
+    // 내가 등록한 공고 조회
     const { data: myJobs } = await supabase
       .from("jobs")
       .select("id")
       .eq("user_id", user.id);
 
-    const myJobIds = myJobs?.map((job) => job.id) ?? [];
+    const myJobIds =
+      myJobs?.map((job) => job.id) ?? [];
 
+    // 아직 확인하지 않은 새 지원자 수
     if (myJobIds.length > 0) {
       const { count } = await supabase
         .from("applications")
@@ -60,11 +50,11 @@ if (user) {
 
   return (
     <header className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-6">
         {/* 로고 */}
         <Link
           href="/"
-          className="text-2xl font-black text-gray-900"
+          className="shrink-0 text-2xl font-black text-gray-900"
         >
           중장비
           <span className="text-orange-500">
@@ -73,80 +63,62 @@ if (user) {
         </Link>
 
         {/* PC 메뉴 */}
-        <nav className="hidden items-center gap-7 lg:flex">
+        <nav className="hidden items-center gap-5 lg:flex">
           <Link
             href="/jobs"
-            className="font-medium text-gray-700 transition hover:text-orange-500"
+            className="whitespace-nowrap text-sm font-medium text-gray-700 transition hover:text-orange-500"
           >
             일자리 찾기
           </Link>
 
           <Link
             href="/workers"
-            className="font-medium text-gray-700 transition hover:text-orange-500"
+            className="whitespace-nowrap text-sm font-medium text-gray-700 transition hover:text-orange-500"
           >
             기사 찾기
           </Link>
 
           <Link
             href="/jobs/new"
-            className="font-medium text-gray-700 transition hover:text-orange-500"
+            className="whitespace-nowrap text-sm font-medium text-gray-700 transition hover:text-orange-500"
           >
             공고 등록
           </Link>
-          {isAdmin && (
-  <>
-    <Link
-      href="/admin/jobs"
-      className="font-bold text-red-600 transition hover:text-red-700"
-    >
-      공고 관리
-    </Link>
-
-    <Link
-      href="/admin/reports"
-      className="font-bold text-red-600 transition hover:text-red-700"
-    >
-      신고 관리
-    </Link>
-  </>
-)}
 
           <Link
             href="/workers/profile"
-            className="font-medium text-gray-700 transition hover:text-orange-500"
+            className="whitespace-nowrap text-sm font-medium text-gray-700 transition hover:text-orange-500"
           >
             기사 프로필 등록
           </Link>
 
-          {/* 관리자만 표시 */}
+          {/* 관리자 전용 메뉴 */}
           {isAdmin && (
-  <>
-    <Link
-      href="/admin/jobs"
-      className="rounded-lg bg-red-50 px-4 py-2 font-bold text-red-600 transition hover:bg-red-100"
-    >
-      공고 관리
-    </Link>
+            <>
+              <Link
+                href="/admin/jobs"
+                className="whitespace-nowrap rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-600 transition hover:bg-red-100"
+              >
+                공고 관리
+              </Link>
 
-    <Link
-      href="/admin/reports"
-      className="rounded-lg bg-red-50 px-4 py-2 font-bold text-red-600 transition hover:bg-red-100"
-    >
-      신고 관리
-    </Link>
-  </>
-)}
-          
+              <Link
+                href="/admin/reports"
+                className="whitespace-nowrap rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-600 transition hover:bg-red-100"
+              >
+                신고 관리
+              </Link>
+            </>
+          )}
         </nav>
 
         {/* PC 로그인 영역 */}
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden shrink-0 items-center gap-3 lg:flex">
           {user ? (
             <>
               <Link
                 href="/mypage"
-                className="relative font-medium text-gray-700 transition hover:text-orange-500"
+                className="relative whitespace-nowrap text-sm font-medium text-gray-700 transition hover:text-orange-500"
               >
                 마이페이지
 
@@ -157,38 +129,20 @@ if (user) {
                 )}
               </Link>
 
-              {isAdmin && (
-  <>
-    <Link
-      href="/admin/jobs"
-      className="block px-4 py-3 font-bold text-red-600"
-    >
-      공고 관리
-    </Link>
-
-    <Link
-      href="/admin/reports"
-      className="block px-4 py-3 font-bold text-red-600"
-    >
-      신고 관리
-    </Link>
-  </>
-)}
-
               <LogoutButton />
             </>
           ) : (
             <>
               <Link
                 href="/login"
-                className="font-medium text-gray-700 transition hover:text-orange-500"
+                className="whitespace-nowrap text-sm font-medium text-gray-700 transition hover:text-orange-500"
               >
                 로그인
               </Link>
 
               <Link
                 href="/signup"
-                className="rounded-lg bg-orange-500 px-4 py-2 font-bold text-white transition hover:bg-orange-600"
+                className="whitespace-nowrap rounded-lg bg-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-600"
               >
                 회원가입
               </Link>
@@ -196,11 +150,13 @@ if (user) {
           )}
         </div>
 
-        {/* 모바일 */}
+        {/* 모바일 메뉴 */}
         <MobileMenu
           loggedIn={!!user}
           isAdmin={isAdmin}
-          newApplicantCount={newApplicantCount}
+          newApplicantCount={
+            newApplicantCount
+          }
         />
       </div>
     </header>
