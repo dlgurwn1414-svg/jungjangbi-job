@@ -121,13 +121,23 @@ if (user) {
 
           {/* 관리자만 표시 */}
           {isAdmin && (
-            <Link
-              href="/admin/reports"
-              className="rounded-lg bg-red-50 px-3 py-2 font-bold text-red-600 transition hover:bg-red-100"
-            >
-              관리자
-            </Link>
-          )}
+  <>
+    <Link
+      href="/admin/jobs"
+      className="rounded-lg bg-red-50 px-4 py-2 font-bold text-red-600 transition hover:bg-red-100"
+    >
+      공고 관리
+    </Link>
+
+    <Link
+      href="/admin/reports"
+      className="rounded-lg bg-red-50 px-4 py-2 font-bold text-red-600 transition hover:bg-red-100"
+    >
+      신고 관리
+    </Link>
+  </>
+)}
+          
         </nav>
 
         {/* PC 로그인 영역 */}
