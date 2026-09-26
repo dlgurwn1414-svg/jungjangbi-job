@@ -12,6 +12,18 @@ export default async function Header() {
   } = await supabase.auth.getUser();
 
   let isAdmin = false;
+
+if (user) {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("is_admin")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  isAdmin = profile?.is_admin === true;
+}
+
+
   let newApplicantCount = 0;
 
   if (user) {
@@ -82,6 +94,23 @@ export default async function Header() {
           >
             공고 등록
           </Link>
+          {isAdmin && (
+  <>
+    <Link
+      href="/admin/jobs"
+      className="font-bold text-red-600 transition hover:text-red-700"
+    >
+      공고 관리
+    </Link>
+
+    <Link
+      href="/admin/reports"
+      className="font-bold text-red-600 transition hover:text-red-700"
+    >
+      신고 관리
+    </Link>
+  </>
+)}
 
           <Link
             href="/workers/profile"
@@ -117,6 +146,24 @@ export default async function Header() {
                   </span>
                 )}
               </Link>
+
+              {isAdmin && (
+  <>
+    <Link
+      href="/admin/jobs"
+      className="block px-4 py-3 font-bold text-red-600"
+    >
+      공고 관리
+    </Link>
+
+    <Link
+      href="/admin/reports"
+      className="block px-4 py-3 font-bold text-red-600"
+    >
+      신고 관리
+    </Link>
+  </>
+)}
 
               <LogoutButton />
             </>
