@@ -71,7 +71,9 @@ export default async function MyPage() {
       )
     `)
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .order("created_at", {
+      ascending: false,
+    });
 
   // 내 기사 프로필
   const { data: workerProfile } = await supabase
@@ -99,7 +101,9 @@ export default async function MyPage() {
       )
     `)
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .order("created_at", {
+      ascending: false,
+    });
 
   // 관심 기사
   const { data: favoriteWorkers } = await supabase
@@ -117,7 +121,9 @@ export default async function MyPage() {
       )
     `)
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .order("created_at", {
+      ascending: false,
+    });
 
   // 내가 지원한 공고
   const { data: applications } = await supabase
@@ -139,69 +145,74 @@ export default async function MyPage() {
       )
     `)
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
-    const { data: recentJobs } = await supabase
-  .from("recent_jobs")
-  .select(`
-    id,
-    viewed_at,
-    jobs (
+    .order("created_at", {
+      ascending: false,
+    });
+
+  // 최근 본 공고
+  const { data: recentJobs } = await supabase
+    .from("recent_jobs")
+    .select(`
       id,
-      title,
-      company,
-      location,
-      equipment,
-      salary,
-      experience,
-      urgent,
-      status
-    )
-  `)
-  .eq("user_id", user.id)
-  .order("viewed_at", { ascending: false })
-  .limit(6);
+      viewed_at,
+      jobs (
+        id,
+        title,
+        company,
+        location,
+        equipment,
+        salary,
+        experience,
+        urgent,
+        status
+      )
+    `)
+    .eq("user_id", user.id)
+    .order("viewed_at", {
+      ascending: false,
+    })
+    .limit(6);
 
   return (
     <>
       <Header />
 
       <main className="min-h-screen bg-gray-50">
-        <div className="mx-auto max-w-6xl px-6 py-10">
-
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
           {/* 페이지 제목 */}
           <div>
-            <p className="font-semibold text-orange-500">
+            <p className="text-sm font-semibold text-orange-500 sm:text-base">
               MY PAGE
             </p>
 
-            <h1 className="mt-1 text-3xl font-bold text-gray-900">
+            <h1 className="mt-1 text-2xl font-bold text-gray-900 sm:text-3xl">
               마이페이지
             </h1>
 
-            <p className="mt-2 text-gray-500">
+            <p className="mt-2 text-sm leading-6 text-gray-500 sm:text-base">
               내 정보와 활동 내역을 확인할 수 있습니다.
             </p>
           </div>
 
           {/* 계정 정보 */}
-          <section className="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:mt-8 sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-semibold text-gray-500">
                   내 계정
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold text-gray-900">
+                <h2 className="mt-2 break-words text-xl font-bold text-gray-900">
                   {profile?.name || "회원"}
                 </h2>
 
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 break-all text-sm text-gray-600">
                   {user.email}
                 </p>
               </div>
 
               {profile?.user_type && (
-                <span className="rounded-full bg-orange-100 px-4 py-2 text-sm font-bold text-orange-600">
+                <span className="self-start rounded-full bg-orange-100 px-4 py-2 text-sm font-bold text-orange-600 sm:self-auto">
                   {profile.user_type === "worker"
                     ? "기사 회원"
                     : "업체 회원"}
@@ -213,26 +224,26 @@ export default async function MyPage() {
           {/* 기사 프로필 */}
           <section className="mt-8">
             <div>
-              <p className="font-semibold text-orange-500">
+              <p className="text-sm font-semibold text-orange-500 sm:text-base">
                 기사 프로필
               </p>
 
-              <h2 className="mt-1 text-2xl font-bold text-gray-900">
+              <h2 className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
                 내 기사 정보
               </h2>
             </div>
 
             {workerProfile ? (
-              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">
+                  <div className="min-w-0">
+                    <h3 className="break-words text-lg font-bold text-gray-900 sm:text-xl">
                       {workerProfile.name}
                     </h3>
 
                     <div className="mt-4 flex flex-wrap gap-2">
                       {workerProfile.equipment && (
-                        <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
+                        <span className="max-w-full truncate rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
                           {workerProfile.equipment}
                         </span>
                       )}
@@ -252,23 +263,23 @@ export default async function MyPage() {
                     </div>
 
                     {workerProfile.desired_salary && (
-                      <p className="mt-4 font-bold text-orange-600">
+                      <p className="mt-4 break-words font-bold text-orange-600">
                         희망 급여 {workerProfile.desired_salary}
                       </p>
                     )}
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
                     <Link
                       href={`/workers/${workerProfile.id}`}
-                      className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50"
+                      className="flex min-h-11 items-center justify-center rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50"
                     >
                       프로필 보기
                     </Link>
 
                     <Link
                       href="/workers/profile"
-                      className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-600"
+                      className="flex min-h-11 items-center justify-center rounded-xl bg-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-600"
                     >
                       수정하기
                     </Link>
@@ -276,14 +287,14 @@ export default async function MyPage() {
                 </div>
               </div>
             ) : (
-              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-10 text-center">
-                <p className="text-gray-500">
+              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 text-center sm:p-10">
+                <p className="text-sm text-gray-500 sm:text-base">
                   아직 등록한 기사 프로필이 없습니다.
                 </p>
 
                 <Link
                   href="/workers/profile"
-                  className="mt-5 inline-block rounded-lg bg-orange-500 px-5 py-3 font-bold text-white"
+                  className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-3 font-bold text-white sm:w-auto"
                 >
                   기사 프로필 등록
                 </Link>
@@ -293,25 +304,29 @@ export default async function MyPage() {
 
           {/* 내가 등록한 공고 */}
           <section className="mt-10">
-            <div className="flex items-end justify-between gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="font-semibold text-orange-500">
+                <p className="text-sm font-semibold text-orange-500 sm:text-base">
                   내 공고
                 </p>
 
-                <h2 className="mt-1 text-2xl font-bold text-gray-900">
+                <h2 className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
                   내가 등록한 공고
                 </h2>
               </div>
 
-              <div className="flex items-center gap-4">
-                <p className="hidden text-sm text-gray-500 sm:block">
-                  총 {myJobs?.length ?? 0}개
+              <div className="flex w-full items-center justify-between gap-4 sm:w-auto">
+                <p className="text-sm text-gray-500">
+                  총{" "}
+                  <span className="font-bold text-gray-900">
+                    {myJobs?.length ?? 0}
+                  </span>
+                  개
                 </p>
 
                 <Link
                   href="/jobs/new"
-                  className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-600"
+                  className="flex min-h-11 items-center justify-center rounded-xl bg-orange-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-orange-600"
                 >
                   공고 등록
                 </Link>
@@ -319,8 +334,8 @@ export default async function MyPage() {
             </div>
 
             {!myJobs || myJobs.length === 0 ? (
-              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-10 text-center">
-                <p className="text-gray-500">
+              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 text-center sm:p-10">
+                <p className="text-sm text-gray-500 sm:text-base">
                   아직 등록한 공고가 없습니다.
                 </p>
               </div>
@@ -331,22 +346,23 @@ export default async function MyPage() {
                     job.applications?.length ?? 0;
 
                   const newApplicantCount =
-  job.applications?.filter(
-    (application: {
-      owner_seen: boolean | null;
-    }) =>
-      application.owner_seen === false
-  ).length ?? 0;
+                    job.applications?.filter(
+                      (application: {
+                        owner_seen: boolean | null;
+                      }) =>
+                        application.owner_seen === false
+                    ).length ?? 0;
+
                   const isClosed =
                     job.status === "closed";
 
                   return (
                     <div
                       key={job.id}
-                      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+                      className="min-w-0 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
                     >
                       <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
                             {job.urgent && !isClosed && (
                               <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600">
@@ -365,17 +381,17 @@ export default async function MyPage() {
                             )}
 
                             {job.equipment && (
-                              <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                              <span className="max-w-full truncate rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
                                 {job.equipment}
                               </span>
                             )}
                           </div>
 
-                          <h3 className="mt-4 text-xl font-bold text-gray-900">
+                          <h3 className="mt-4 break-words text-lg font-bold text-gray-900 sm:text-xl">
                             {job.title}
                           </h3>
 
-                          <p className="mt-2 text-sm text-gray-500">
+                          <p className="mt-2 break-words text-sm text-gray-500">
                             {job.company}
                           </p>
 
@@ -391,21 +407,30 @@ export default async function MyPage() {
                             )}
                           </div>
 
-                          <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
+                          <div className="mt-4 flex flex-wrap gap-x-2 gap-y-1 text-sm text-gray-600">
                             {job.location && (
-                              <span>{job.location}</span>
+                              <span className="break-words">
+                                {job.location}
+                              </span>
                             )}
 
                             {job.experience && (
                               <>
-                                <span>·</span>
-                                <span>{job.experience}</span>
+                                {job.location && (
+                                  <span className="text-gray-300">
+                                    ·
+                                  </span>
+                                )}
+
+                                <span>
+                                  {job.experience}
+                                </span>
                               </>
                             )}
                           </div>
 
                           <p
-                            className={`mt-4 font-bold ${
+                            className={`mt-4 break-words font-bold ${
                               isClosed
                                 ? "text-gray-500"
                                 : "text-orange-600"
@@ -415,17 +440,17 @@ export default async function MyPage() {
                           </p>
                         </div>
 
-                        <div className="flex flex-wrap gap-2">
+                        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap md:max-w-sm md:justify-end">
                           <Link
                             href={`/jobs/${job.id}`}
-                            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50"
+                            className="flex min-h-11 items-center justify-center rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-700 transition hover:bg-gray-50"
                           >
                             보기
                           </Link>
 
                           <Link
                             href={`/jobs/${job.id}/applicants`}
-                            className="rounded-lg border border-green-300 bg-green-50 px-4 py-2 text-sm font-bold text-green-700 transition hover:bg-green-100"
+                            className="flex min-h-11 items-center justify-center rounded-xl border border-green-300 bg-green-50 px-3 py-2 text-center text-sm font-bold text-green-700 transition hover:bg-green-100"
                           >
                             지원자 보기 ({applicantCount})
                             {newApplicantCount > 0 && (
@@ -437,19 +462,25 @@ export default async function MyPage() {
 
                           <Link
                             href={`/jobs/${job.id}/edit`}
-                            className="rounded-lg border border-orange-300 bg-orange-50 px-4 py-2 text-sm font-bold text-orange-600 transition hover:bg-orange-100"
+                            className="flex min-h-11 items-center justify-center rounded-xl border border-orange-300 bg-orange-50 px-3 py-2 text-sm font-bold text-orange-600 transition hover:bg-orange-100"
                           >
                             수정하기
                           </Link>
 
-                          <JobStatusButton
-                            jobId={job.id}
-                            initialStatus={
-                              isClosed ? "closed" : "open"
-                            }
-                          />
+                          <div className="[&>*]:min-h-11 [&>*]:w-full sm:[&>*]:w-auto">
+                            <JobStatusButton
+                              jobId={job.id}
+                              initialStatus={
+                                isClosed ? "closed" : "open"
+                              }
+                            />
+                          </div>
 
-                          <DeleteJobButton jobId={job.id} />
+                          <div className="col-span-2 [&>*]:min-h-11 [&>*]:w-full sm:col-span-1 sm:[&>*]:w-auto">
+                            <DeleteJobButton
+                              jobId={job.id}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -459,15 +490,15 @@ export default async function MyPage() {
             )}
           </section>
 
-          {/* 관심 공고 */}
+                    {/* 관심 공고 */}
           <section className="mt-10">
-            <div className="flex items-end justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="font-semibold text-orange-500">
+                <p className="text-sm font-semibold text-orange-500 sm:text-base">
                   관심 공고
                 </p>
 
-                <h2 className="mt-1 text-2xl font-bold text-gray-900">
+                <h2 className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
                   저장한 공고
                 </h2>
               </div>
@@ -477,30 +508,31 @@ export default async function MyPage() {
               </p>
             </div>
 
-            {!favorites || favorites.length === 0 ? (
-              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-10 text-center">
-                <p className="text-gray-500">
+            {!favorites ||
+            favorites.length === 0 ? (
+              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 text-center sm:p-10">
+                <p className="text-sm text-gray-500 sm:text-base">
                   아직 저장한 관심 공고가 없습니다.
                 </p>
 
                 <Link
                   href="/jobs"
-                  className="mt-5 inline-block rounded-lg bg-orange-500 px-5 py-3 font-bold text-white"
+                  className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-3 font-bold text-white sm:w-auto"
                 >
                   일자리 찾아보기
                 </Link>
               </div>
             ) : (
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
                 {favorites.map((favorite) => {
-  const job =
-    getSingleRelation<JobSummary>(
-      favorite.jobs
-    );
+                  const job =
+                    getSingleRelation<JobSummary>(
+                      favorite.jobs
+                    );
 
-  if (!job) {
-    return null;
-  }
+                  if (!job) {
+                    return null;
+                  }
 
                   const isClosed =
                     job.status === "closed";
@@ -509,18 +541,19 @@ export default async function MyPage() {
                     <Link
                       key={favorite.id}
                       href={`/jobs/${job.id}`}
-                      className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition ${
+                      className={`min-w-0 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition sm:p-6 ${
                         isClosed
                           ? "opacity-60"
                           : "hover:-translate-y-1 hover:shadow-md"
                       }`}
                     >
                       <div className="flex flex-wrap items-center gap-2">
-                        {job.urgent && !isClosed && (
-                          <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600">
-                            급구
-                          </span>
-                        )}
+                        {job.urgent &&
+                          !isClosed && (
+                            <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600">
+                              급구
+                            </span>
+                          )}
 
                         {isClosed ? (
                           <span className="rounded-full bg-gray-200 px-3 py-1 text-xs font-bold text-gray-600">
@@ -537,36 +570,53 @@ export default async function MyPage() {
                         </span>
                       </div>
 
-                      <h3 className="mt-4 text-xl font-bold text-gray-900">
+                      <h3 className="mt-4 break-words text-lg font-bold text-gray-900 sm:text-xl">
                         {job.title}
                       </h3>
 
-                      <p className="mt-2 text-sm text-gray-500">
+                      <p className="mt-2 break-words text-sm text-gray-500">
                         {job.company}
                       </p>
 
-                      <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
+                      <div className="mt-4 flex flex-wrap gap-x-2 gap-y-1 text-sm text-gray-600">
                         {job.location && (
-                          <span>{job.location}</span>
+                          <span>
+                            {job.location}
+                          </span>
                         )}
 
                         {job.equipment && (
                           <>
-                            <span>·</span>
-                            <span>{job.equipment}</span>
+                            {job.location && (
+                              <span className="text-gray-300">
+                                ·
+                              </span>
+                            )}
+
+                            <span>
+                              {job.equipment}
+                            </span>
                           </>
                         )}
 
                         {job.experience && (
                           <>
-                            <span>·</span>
-                            <span>{job.experience}</span>
+                            {(job.location ||
+                              job.equipment) && (
+                              <span className="text-gray-300">
+                                ·
+                              </span>
+                            )}
+
+                            <span>
+                              {job.experience}
+                            </span>
                           </>
                         )}
                       </div>
 
                       <p
-                        className={`mt-5 font-bold ${
+                        className={`mt-5 break-words font-bold ${
                           isClosed
                             ? "text-gray-500"
                             : "text-orange-600"
@@ -583,13 +633,13 @@ export default async function MyPage() {
 
           {/* 관심 기사 */}
           <section className="mt-10">
-            <div className="flex items-end justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="font-semibold text-orange-500">
+                <p className="text-sm font-semibold text-orange-500 sm:text-base">
                   관심 기사
                 </p>
 
-                <h2 className="mt-1 text-2xl font-bold text-gray-900">
+                <h2 className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
                   저장한 기사
                 </h2>
               </div>
@@ -601,210 +651,247 @@ export default async function MyPage() {
 
             {!favoriteWorkers ||
             favoriteWorkers.length === 0 ? (
-              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-10 text-center">
-                <p className="text-gray-500">
+              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 text-center sm:p-10">
+                <p className="text-sm text-gray-500 sm:text-base">
                   아직 저장한 관심 기사가 없습니다.
                 </p>
 
                 <Link
                   href="/workers"
-                  className="mt-5 inline-block rounded-lg bg-orange-500 px-5 py-3 font-bold text-white"
+                  className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-3 font-bold text-white sm:w-auto"
                 >
                   기사 찾아보기
                 </Link>
               </div>
             ) : (
-              <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {favoriteWorkers.map((favorite) => {
-  const worker =
-    getSingleRelation<WorkerSummary>(
-      favorite.worker_profiles
-    );
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {favoriteWorkers.map(
+                  (favorite) => {
+                    const worker =
+                      getSingleRelation<WorkerSummary>(
+                        favorite.worker_profiles
+                      );
 
-  if (!worker) {
-    return null;
-  }
+                    if (!worker) {
+                      return null;
+                    }
 
-                  return (
-                    <Link
-                      key={favorite.id}
-                      href={`/workers/${worker.id}`}
-                      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-                    >
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-700">
-                          ★ 관심 기사
-                        </span>
-
-                        {worker.equipment && (
-                          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-                            {worker.equipment}
+                    return (
+                      <Link
+                        key={favorite.id}
+                        href={`/workers/${worker.id}`}
+                        className="min-w-0 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md sm:p-6 lg:hover:-translate-y-1"
+                      >
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-700">
+                            ★ 관심 기사
                           </span>
-                        )}
-                      </div>
 
-                      <h3 className="mt-4 text-xl font-bold text-gray-900">
-                        {worker.name}
-                      </h3>
-
-                      <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
-                        {worker.region && (
-                          <span>{worker.region}</span>
-                        )}
-
-                        {worker.experience_years !== null &&
-                          worker.experience_years !== undefined && (
-                            <>
-                              <span>·</span>
-                              <span>
-                                경력 {worker.experience_years}년
-                              </span>
-                            </>
+                          {worker.equipment && (
+                            <span className="max-w-full truncate rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                              {
+                                worker.equipment
+                              }
+                            </span>
                           )}
-                      </div>
+                        </div>
 
-                      <p className="mt-5 font-bold text-orange-600">
-                        {worker.desired_salary || "급여 협의"}
-                      </p>
-                    </Link>
-                  );
-                })}
+                        <h3 className="mt-4 break-words text-lg font-bold text-gray-900 sm:text-xl">
+                          {worker.name}
+                        </h3>
+
+                        <div className="mt-4 flex flex-wrap gap-x-2 gap-y-1 text-sm text-gray-600">
+                          {worker.region && (
+                            <span>
+                              {worker.region}
+                            </span>
+                          )}
+
+                          {worker.experience_years !==
+                            null &&
+                            worker.experience_years !==
+                              undefined && (
+                              <>
+                                {worker.region && (
+                                  <span className="text-gray-300">
+                                    ·
+                                  </span>
+                                )}
+
+                                <span>
+                                  경력{" "}
+                                  {
+                                    worker.experience_years
+                                  }
+                                  년
+                                </span>
+                              </>
+                            )}
+                        </div>
+
+                        <p className="mt-5 break-words font-bold text-orange-600">
+                          {worker.desired_salary ||
+                            "급여 협의"}
+                        </p>
+                      </Link>
+                    );
+                  }
+                )}
               </div>
             )}
           </section>
 
           {/* 최근 본 공고 */}
-<section className="mt-10">
-  <div className="flex items-end justify-between">
-    <div>
-      <p className="font-semibold text-orange-500">
-        최근 본 공고
-      </p>
+          <section className="mt-10">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold text-orange-500 sm:text-base">
+                  최근 본 공고
+                </p>
 
-      <h2 className="mt-1 text-2xl font-bold text-gray-900">
-        최근 확인한 일자리
-      </h2>
-    </div>
+                <h2 className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
+                  최근 확인한 일자리
+                </h2>
+              </div>
 
-    <p className="text-sm text-gray-500">
-      최근 {recentJobs?.length ?? 0}개
-    </p>
-  </div>
-
-  {!recentJobs || recentJobs.length === 0 ? (
-    <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-10 text-center">
-      <p className="text-gray-500">
-        아직 확인한 공고가 없습니다.
-      </p>
-
-      <Link
-        href="/jobs"
-        className="mt-5 inline-block rounded-lg bg-orange-500 px-5 py-3 font-bold text-white"
-      >
-        일자리 찾아보기
-      </Link>
-    </div>
-  ) : (
-    <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {recentJobs.map((recent) => {
-  const job =
-    getSingleRelation<JobSummary>(
-      recent.jobs
-    );
-
-  if (!job) {
-    return null;
-  }
-
-        const isClosed = job.status === "closed";
-
-        return (
-          <Link
-            key={recent.id}
-            href={`/jobs/${job.id}`}
-            className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition ${
-              isClosed
-                ? "opacity-60"
-                : "hover:-translate-y-1 hover:shadow-md"
-            }`}
-          >
-            <div className="flex flex-wrap items-center gap-2">
-              {job.urgent && !isClosed && (
-                <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600">
-                  급구
-                </span>
-              )}
-
-              {isClosed ? (
-                <span className="rounded-full bg-gray-200 px-3 py-1 text-xs font-bold text-gray-600">
-                  마감
-                </span>
-              ) : (
-                <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
-                  모집중
-                </span>
-              )}
-
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
-                최근 봄
-              </span>
-            </div>
-
-            <h3 className="mt-4 text-xl font-bold text-gray-900">
-              {job.title}
-            </h3>
-
-            <p className="mt-2 text-sm text-gray-500">
-              {job.company}
-            </p>
-
-            <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
-              {job.location && (
-                <span>{job.location}</span>
-              )}
-
-              {job.equipment && (
-                <>
-                  <span>·</span>
-                  <span>{job.equipment}</span>
-                </>
-              )}
-            </div>
-
-            <p
-              className={`mt-5 font-bold ${
-                isClosed
-                  ? "text-gray-500"
-                  : "text-orange-600"
-              }`}
-            >
-              {job.salary}
-            </p>
-
-            {recent.viewed_at && (
-              <p className="mt-3 text-xs text-gray-400">
-                최근 확인{" "}
-                {new Date(
-                  recent.viewed_at
-                ).toLocaleDateString("ko-KR")}
+              <p className="text-sm text-gray-500">
+                최근 {recentJobs?.length ?? 0}개
               </p>
+            </div>
+
+            {!recentJobs ||
+            recentJobs.length === 0 ? (
+              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 text-center sm:p-10">
+                <p className="text-sm text-gray-500 sm:text-base">
+                  아직 확인한 공고가 없습니다.
+                </p>
+
+                <Link
+                  href="/jobs"
+                  className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-3 font-bold text-white sm:w-auto"
+                >
+                  일자리 찾아보기
+                </Link>
+              </div>
+            ) : (
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {recentJobs.map(
+                  (recent) => {
+                    const job =
+                      getSingleRelation<JobSummary>(
+                        recent.jobs
+                      );
+
+                    if (!job) {
+                      return null;
+                    }
+
+                    const isClosed =
+                      job.status ===
+                      "closed";
+
+                    return (
+                      <Link
+                        key={recent.id}
+                        href={`/jobs/${job.id}`}
+                        className={`min-w-0 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition sm:p-6 ${
+                          isClosed
+                            ? "opacity-60"
+                            : "hover:shadow-md lg:hover:-translate-y-1"
+                        }`}
+                      >
+                        <div className="flex flex-wrap items-center gap-2">
+                          {job.urgent &&
+                            !isClosed && (
+                              <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600">
+                                급구
+                              </span>
+                            )}
+
+                          {isClosed ? (
+                            <span className="rounded-full bg-gray-200 px-3 py-1 text-xs font-bold text-gray-600">
+                              마감
+                            </span>
+                          ) : (
+                            <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
+                              모집중
+                            </span>
+                          )}
+
+                          <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
+                            최근 봄
+                          </span>
+                        </div>
+
+                        <h3 className="mt-4 break-words text-lg font-bold text-gray-900 sm:text-xl">
+                          {job.title}
+                        </h3>
+
+                        <p className="mt-2 break-words text-sm text-gray-500">
+                          {job.company}
+                        </p>
+
+                        <div className="mt-4 flex flex-wrap gap-x-2 gap-y-1 text-sm text-gray-600">
+                          {job.location && (
+                            <span>
+                              {job.location}
+                            </span>
+                          )}
+
+                          {job.equipment && (
+                            <>
+                              {job.location && (
+                                <span className="text-gray-300">
+                                  ·
+                                </span>
+                              )}
+
+                              <span>
+                                {
+                                  job.equipment
+                                }
+                              </span>
+                            </>
+                          )}
+                        </div>
+
+                        <p
+                          className={`mt-5 break-words font-bold ${
+                            isClosed
+                              ? "text-gray-500"
+                              : "text-orange-600"
+                          }`}
+                        >
+                          {job.salary}
+                        </p>
+
+                        {recent.viewed_at && (
+                          <p className="mt-3 text-xs text-gray-400">
+                            최근 확인{" "}
+                            {new Date(
+                              recent.viewed_at
+                            ).toLocaleDateString(
+                              "ko-KR"
+                            )}
+                          </p>
+                        )}
+                      </Link>
+                    );
+                  }
+                )}
+              </div>
             )}
-          </Link>
-        );
-      })}
-    </div>
-  )}
-</section>
+          </section>
 
           {/* 내가 지원한 공고 */}
           <section className="mt-10">
-            <div className="flex items-end justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="font-semibold text-orange-500">
+                <p className="text-sm font-semibold text-orange-500 sm:text-base">
                   지원 내역
                 </p>
 
-                <h2 className="mt-1 text-2xl font-bold text-gray-900">
+                <h2 className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
                   내가 지원한 공고
                 </h2>
               </div>
@@ -816,130 +903,162 @@ export default async function MyPage() {
 
             {!applications ||
             applications.length === 0 ? (
-              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-10 text-center">
-                <p className="text-gray-500">
+              <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 text-center sm:p-10">
+                <p className="text-sm text-gray-500 sm:text-base">
                   아직 지원한 공고가 없습니다.
                 </p>
 
                 <Link
                   href="/jobs"
-                  className="mt-5 inline-block rounded-lg bg-orange-500 px-5 py-3 font-bold text-white"
+                  className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-3 font-bold text-white sm:w-auto"
                 >
                   일자리 찾아보기
                 </Link>
               </div>
             ) : (
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                {applications.map((application) => {
-  const job =
-    getSingleRelation<JobSummary>(
-      application.jobs
-    );
+              <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                {applications.map(
+                  (application) => {
+                    const job =
+                      getSingleRelation<JobSummary>(
+                        application.jobs
+                      );
 
-  if (!job) {
-    return null;
-  }
+                    if (!job) {
+                      return null;
+                    }
 
-                  const isClosed =
-                    job.status === "closed";
+                    const isClosed =
+                      job.status ===
+                      "closed";
 
-                  return (
-                    <Link
-                      key={application.id}
-                      href={`/jobs/${job.id}`}
-                      className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition ${
-                        isClosed
-                          ? "opacity-60"
-                          : "hover:-translate-y-1 hover:shadow-md"
-                      }`}
-                    >
-                      <div className="flex flex-wrap items-center gap-2">
-                        {job.urgent && !isClosed && (
-                          <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600">
-                            급구
-                          </span>
-                        )}
-
-                        {isClosed && (
-                          <span className="rounded-full bg-gray-200 px-3 py-1 text-xs font-bold text-gray-600">
-                            공고 마감
-                          </span>
-                        )}
-
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-bold ${
-                            application.status === "accepted"
-                              ? "bg-green-100 text-green-700"
-                              : application.status === "rejected"
-                              ? "bg-red-100 text-red-700"
-                              : application.status === "reviewing"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {application.status === "accepted"
-                            ? "채용"
-                            : application.status === "rejected"
-                            ? "불합격"
-                            : application.status === "reviewing"
-                            ? "검토중"
-                            : "지원됨"}
-                        </span>
-                      </div>
-
-                      <h3 className="mt-4 text-xl font-bold text-gray-900">
-                        {job.title}
-                      </h3>
-
-                      <p className="mt-2 text-sm text-gray-500">
-                        {job.company}
-                      </p>
-
-                      <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
-                        {job.location && (
-                          <span>{job.location}</span>
-                        )}
-
-                        {job.equipment && (
-                          <>
-                            <span>·</span>
-                            <span>{job.equipment}</span>
-                          </>
-                        )}
-
-                        {job.experience && (
-                          <>
-                            <span>·</span>
-                            <span>{job.experience}</span>
-                          </>
-                        )}
-                      </div>
-
-                      <p
-                        className={`mt-5 font-bold ${
+                    return (
+                      <Link
+                        key={application.id}
+                        href={`/jobs/${job.id}`}
+                        className={`min-w-0 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition sm:p-6 ${
                           isClosed
-                            ? "text-gray-500"
-                            : "text-orange-600"
+                            ? "opacity-60"
+                            : "hover:-translate-y-1 hover:shadow-md"
                         }`}
                       >
-                        {job.salary}
-                      </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          {job.urgent &&
+                            !isClosed && (
+                              <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600">
+                                급구
+                              </span>
+                            )}
 
-                      {application.created_at && (
-                        <p className="mt-3 text-xs text-gray-400">
-                          지원일{" "}
-                          {new Date(
-                            application.created_at
-                          ).toLocaleDateString("ko-KR")}
+                          {isClosed && (
+                            <span className="rounded-full bg-gray-200 px-3 py-1 text-xs font-bold text-gray-600">
+                              공고 마감
+                            </span>
+                          )}
+
+                          <span
+                            className={`rounded-full px-3 py-1 text-xs font-bold ${
+                              application.status ===
+                              "accepted"
+                                ? "bg-green-100 text-green-700"
+                                : application.status ===
+                                  "rejected"
+                                ? "bg-red-100 text-red-700"
+                                : application.status ===
+                                  "reviewing"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-gray-100 text-gray-700"
+                            }`}
+                          >
+                            {application.status ===
+                            "accepted"
+                              ? "채용"
+                              : application.status ===
+                                "rejected"
+                              ? "불합격"
+                              : application.status ===
+                                "reviewing"
+                              ? "검토중"
+                              : "지원됨"}
+                          </span>
+                        </div>
+
+                        <h3 className="mt-4 break-words text-lg font-bold text-gray-900 sm:text-xl">
+                          {job.title}
+                        </h3>
+
+                        <p className="mt-2 break-words text-sm text-gray-500">
+                          {job.company}
                         </p>
-                      )}
-                    </Link>
-                  );
-                })}
+
+                        <div className="mt-4 flex flex-wrap gap-x-2 gap-y-1 text-sm text-gray-600">
+                          {job.location && (
+                            <span>
+                              {job.location}
+                            </span>
+                          )}
+
+                          {job.equipment && (
+                            <>
+                              {job.location && (
+                                <span className="text-gray-300">
+                                  ·
+                                </span>
+                              )}
+
+                              <span>
+                                {
+                                  job.equipment
+                                }
+                              </span>
+                            </>
+                          )}
+
+                          {job.experience && (
+                            <>
+                              {(job.location ||
+                                job.equipment) && (
+                                <span className="text-gray-300">
+                                  ·
+                                </span>
+                              )}
+
+                              <span>
+                                {
+                                  job.experience
+                                }
+                              </span>
+                            </>
+                          )}
+                        </div>
+
+                        <p
+                          className={`mt-5 break-words font-bold ${
+                            isClosed
+                              ? "text-gray-500"
+                              : "text-orange-600"
+                          }`}
+                        >
+                          {job.salary}
+                        </p>
+
+                        {application.created_at && (
+                          <p className="mt-3 text-xs text-gray-400">
+                            지원일{" "}
+                            {new Date(
+                              application.created_at
+                            ).toLocaleDateString(
+                              "ko-KR"
+                            )}
+                          </p>
+                        )}
+                      </Link>
+                    );
+                  }
+                )}
               </div>
             )}
           </section>
-
         </div>
       </main>
 

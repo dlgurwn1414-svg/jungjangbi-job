@@ -44,17 +44,20 @@ export default function WorkerProfileForm({
   const router = useRouter();
   const supabase = createClient();
 
-  const [name, setName] = useState(
-    initialProfile?.name || ""
-  );
+  const [name, setName] =
+    useState(
+      initialProfile?.name || ""
+    );
 
-  const [phone, setPhone] = useState(
-    initialProfile?.phone || ""
-  );
+  const [phone, setPhone] =
+    useState(
+      initialProfile?.phone || ""
+    );
 
-  const [region, setRegion] = useState(
-    initialProfile?.region || ""
-  );
+  const [region, setRegion] =
+    useState(
+      initialProfile?.region || ""
+    );
 
   const [
     subRegion,
@@ -78,23 +81,27 @@ export default function WorkerProfileForm({
       ""
   );
 
-  const [licenses, setLicenses] =
-    useState(
-      initialProfile?.licenses || ""
-    );
+  const [
+    licenses,
+    setLicenses,
+  ] = useState(
+    initialProfile?.licenses || ""
+  );
 
   const [
     desiredSalary,
     setDesiredSalary,
   ] = useState(
-    initialProfile?.desired_salary || ""
+    initialProfile?.desired_salary ||
+      ""
   );
 
   const [
     introduction,
     setIntroduction,
   ] = useState(
-    initialProfile?.introduction || ""
+    initialProfile?.introduction ||
+      ""
   );
 
   const [loading, setLoading] =
@@ -110,7 +117,7 @@ export default function WorkerProfileForm({
     setSuccessMessage,
   ] = useState("");
 
-  // 선택된 시·도의 시·군·구 목록
+  // 선택된 시·도의 시·군·구
   const selectedSubRegions =
     region &&
     REGIONS.includes(
@@ -126,7 +133,8 @@ export default function WorkerProfileForm({
   ) => {
     setRegion(value);
 
-    // 시·도 변경 시 기존 세부지역 초기화
+    // 시·도 변경 시
+    // 기존 세부지역 초기화
     setSubRegion("");
   };
 
@@ -224,14 +232,20 @@ export default function WorkerProfileForm({
     router.refresh();
   };
 
+  const inputClass =
+    "h-12 w-full rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-100";
+
+  const selectClass =
+    "h-12 w-full rounded-xl border border-gray-300 bg-white px-4 text-base text-gray-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100";
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6"
+      className="space-y-5 sm:space-y-6"
     >
       {/* 이름 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           이름
         </span>
 
@@ -243,41 +257,46 @@ export default function WorkerProfileForm({
           }
           placeholder="기사 이름을 입력해주세요"
           required
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          autoComplete="name"
+          className={inputClass}
         />
       </label>
 
       {/* 연락처 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           연락처
         </span>
 
         <input
           type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           value={phone}
           onChange={(e) =>
-            setPhone(e.target.value)
+            setPhone(
+              e.target.value
+            )
           }
           placeholder="예: 010-1234-5678"
           required
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className={inputClass}
         />
 
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-xs leading-5 text-gray-500 sm:text-sm sm:leading-6">
           로그인한 사용자가 기사
-          상세페이지에서 확인할 수
-          있는 연락처입니다.
+          상세페이지에서 확인할 수 있는
+          연락처입니다.
         </p>
       </label>
 
       {/* 활동 지역 */}
       <div>
-        <p className="mb-2 font-semibold text-gray-700">
+        <p className="mb-3 text-sm font-semibold text-gray-700 sm:text-base">
           활동 지역
         </p>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* 시·도 */}
           <label className="block">
             <span className="mb-2 block text-sm font-medium text-gray-600">
@@ -292,7 +311,9 @@ export default function WorkerProfileForm({
                 )
               }
               required
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+              className={
+                selectClass
+              }
             >
               <option value="">
                 시·도를 선택해주세요
@@ -326,7 +347,7 @@ export default function WorkerProfileForm({
               }
               required
               disabled={!region}
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+              className={`${selectClass} disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400`}
             >
               <option value="">
                 {region
@@ -349,90 +370,99 @@ export default function WorkerProfileForm({
         </div>
       </div>
 
-      {/* 장비 */}
-      <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
-          주 장비
-        </span>
+      {/* 장비 / 경력 */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
+        {/* 장비 */}
+        <label className="block">
+          <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
+            주 장비
+          </span>
 
-        <select
-          value={equipment}
-          onChange={(e) =>
-            setEquipment(
-              e.target.value
-            )
-          }
-          required
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
-        >
-          <option value="">
-            장비를 선택해주세요
-          </option>
-
-          <option value="굴삭기">
-            굴삭기
-          </option>
-
-          <option value="지게차">
-            지게차
-          </option>
-
-          <option value="크레인">
-            크레인
-          </option>
-
-          <option value="덤프트럭">
-            덤프트럭
-          </option>
-
-          <option value="로더">
-            로더
-          </option>
-
-          <option value="불도저">
-            불도저
-          </option>
-
-          <option value="고소작업차">
-            고소작업차
-          </option>
-
-          <option value="기타">
-            기타
-          </option>
-        </select>
-      </label>
-
-      {/* 경력 */}
-      <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
-          경력
-        </span>
-
-        <div className="relative">
-          <input
-            type="number"
-            min="0"
-            value={experienceYears}
+          <select
+            value={equipment}
             onChange={(e) =>
-              setExperienceYears(
+              setEquipment(
                 e.target.value
               )
             }
-            placeholder="예: 10"
             required
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 pr-14 text-gray-900 outline-none transition focus:border-orange-500"
-          />
+            className={
+              selectClass
+            }
+          >
+            <option value="">
+              장비를 선택해주세요
+            </option>
 
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
-            년
+            <option value="굴삭기">
+              굴삭기
+            </option>
+
+            <option value="지게차">
+              지게차
+            </option>
+
+            <option value="크레인">
+              크레인
+            </option>
+
+            <option value="덤프트럭">
+              덤프트럭
+            </option>
+
+            <option value="로더">
+              로더
+            </option>
+
+            <option value="불도저">
+              불도저
+            </option>
+
+            <option value="고소작업차">
+              고소작업차
+            </option>
+
+            <option value="기타">
+              기타
+            </option>
+          </select>
+        </label>
+
+        {/* 경력 */}
+        <label className="block">
+          <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
+            경력
           </span>
-        </div>
-      </label>
+
+          <div className="relative">
+            <input
+              type="number"
+              inputMode="numeric"
+              min="0"
+              step="1"
+              value={
+                experienceYears
+              }
+              onChange={(e) =>
+                setExperienceYears(
+                  e.target.value
+                )
+              }
+              placeholder="예: 10"
+              required
+              className={`${inputClass} pr-12`}
+            />
+
+            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-500">
+              년
+            </span>
+          </div>
+        </label>
+      </div>
 
       {/* 자격증 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           보유 자격증
         </span>
 
@@ -445,13 +475,18 @@ export default function WorkerProfileForm({
             )
           }
           placeholder="예: 굴착기운전기능사, 건설기계조종사면허"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className={inputClass}
         />
+
+        <p className="mt-2 text-xs leading-5 text-gray-500 sm:text-sm">
+          여러 개라면 쉼표로 구분해서
+          작성하면 보기 편합니다.
+        </p>
       </label>
 
       {/* 희망 급여 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           희망 급여
         </span>
 
@@ -464,13 +499,13 @@ export default function WorkerProfileForm({
             )
           }
           placeholder="예: 월 450만원 / 일급 25만원 / 협의"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className={inputClass}
         />
       </label>
 
       {/* 자기소개 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           자기소개
         </span>
 
@@ -481,22 +516,22 @@ export default function WorkerProfileForm({
               e.target.value
             )
           }
-          rows={6}
+          rows={7}
           placeholder="경력, 작업 경험, 가능한 업무 등을 간단히 작성해주세요."
-          className="w-full resize-none rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className="w-full resize-y rounded-xl border border-gray-300 bg-white px-4 py-3 text-base leading-7 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
         />
       </label>
 
       {/* 오류 */}
       {errorMessage && (
-        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium leading-6 text-red-600">
           {errorMessage}
         </div>
       )}
 
       {/* 성공 */}
       {successMessage && (
-        <div className="rounded-lg bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
+        <div className="rounded-xl border border-green-100 bg-green-50 px-4 py-3 text-sm font-medium leading-6 text-green-700">
           {successMessage}
         </div>
       )}
@@ -505,7 +540,7 @@ export default function WorkerProfileForm({
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-xl bg-orange-500 px-6 py-4 text-lg font-bold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-gray-300"
+        className="min-h-14 w-full rounded-xl bg-orange-500 px-6 py-4 text-base font-bold text-white transition hover:bg-orange-600 active:bg-orange-700 disabled:cursor-not-allowed disabled:bg-gray-300 sm:text-lg"
       >
         {loading
           ? "저장 중..."

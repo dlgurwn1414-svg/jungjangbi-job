@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f9fafb;
+  --foreground: #111827;
 }
 
 @theme inline {
@@ -12,33 +12,51 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* 전체 박스 크기 계산 통일 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+
+  /* 모바일에서 글자 크기가 임의로 확대되는 현상 방지 */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
+  width: 100%;
+  min-width: 320px;
+  max-width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  margin: 0;
+
   background: var(--background);
   color: var(--foreground);
+
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 폼 요소 기본 스타일 */
 input,
 select,
-textarea {
-  color: #111827;
-  background-color: white;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: #9ca3af;
+textarea,
+button {
+  font: inherit;
 }
 
 input,
 select,
 textarea {
+  max-width: 100%;
+
   color: #111827 !important;
   background-color: #ffffff !important;
 }
@@ -58,25 +76,41 @@ label {
   color: #374151;
 }
 
-body {
-  background: #f9fafb;
-  color: #111827;
+/* 이미지 때문에 모바일 화면이 옆으로 밀리는 현상 방지 */
+img,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
 }
 
-input,
-select,
-textarea {
-  color: #111827 !important;
-  background-color: #ffffff !important;
+/* 긴 문자열이 화면 밖으로 튀어나오는 문제 완화 */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: #9ca3af !important;
-  opacity: 1;
-}
-
+/* 버튼 / 링크 기본 애니메이션 */
 button,
 a {
-  transition: all 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+/* 모바일 Safari에서 input 선택 시 화면 확대 방지 */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }

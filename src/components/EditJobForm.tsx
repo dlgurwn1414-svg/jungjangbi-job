@@ -44,35 +44,43 @@ export default function EditJobForm({
     job.company || ""
   );
 
-  const [contactPhone, setContactPhone] =
-    useState(
-      job.contact_phone || ""
-    );
+  const [
+    contactPhone,
+    setContactPhone,
+  ] = useState(
+    job.contact_phone || ""
+  );
 
   const [location, setLocation] =
     useState(
       job.location || ""
     );
 
-  const [subLocation, setSubLocation] =
-    useState(
-      job.sub_location || ""
-    );
+  const [
+    subLocation,
+    setSubLocation,
+  ] = useState(
+    job.sub_location || ""
+  );
 
-  const [equipment, setEquipment] =
-    useState(
-      job.equipment || ""
-    );
+  const [
+    equipment,
+    setEquipment,
+  ] = useState(
+    job.equipment || ""
+  );
 
   const [salary, setSalary] =
     useState(
       job.salary || ""
     );
 
-  const [experience, setExperience] =
-    useState(
-      job.experience || ""
-    );
+  const [
+    experience,
+    setExperience,
+  ] = useState(
+    job.experience || ""
+  );
 
   const [workType, setWorkType] =
     useState(
@@ -158,6 +166,7 @@ export default function EditJobForm({
         .from("jobs")
         .update({
           title: title.trim(),
+
           company:
             company.trim(),
 
@@ -165,6 +174,7 @@ export default function EditJobForm({
             contactPhone.trim(),
 
           location,
+
           sub_location:
             subLocation,
 
@@ -189,10 +199,7 @@ export default function EditJobForm({
 
           urgent,
         })
-        .eq(
-          "id",
-          job.id
-        )
+        .eq("id", job.id)
         .eq(
           "user_id",
           user.id
@@ -219,14 +226,20 @@ export default function EditJobForm({
     router.refresh();
   };
 
+  const inputClass =
+    "min-h-12 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-100";
+
+  const selectClass =
+    "min-h-12 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100";
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6"
+      className="space-y-5 sm:space-y-6"
     >
       {/* 공고 제목 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           공고 제목
         </span>
 
@@ -240,13 +253,13 @@ export default function EditJobForm({
           }
           placeholder="예: 굴삭기 기사 모집합니다"
           required
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className={inputClass}
         />
       </label>
 
       {/* 업체명 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           업체명
         </span>
 
@@ -260,18 +273,20 @@ export default function EditJobForm({
           }
           placeholder="업체명을 입력해주세요"
           required
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className={inputClass}
         />
       </label>
 
       {/* 연락처 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           연락처
         </span>
 
         <input
           type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           value={contactPhone}
           onChange={(e) =>
             setContactPhone(
@@ -280,21 +295,22 @@ export default function EditJobForm({
           }
           placeholder="예: 010-1234-5678"
           required
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className={inputClass}
         />
 
-        <p className="mt-2 text-sm text-gray-500">
-          구직자가 공고에서 바로 전화 문의할 수 있는 번호입니다.
+        <p className="mt-2 text-xs leading-5 text-gray-500 sm:text-sm sm:leading-6">
+          구직자가 공고에서 바로 전화
+          문의할 수 있는 번호입니다.
         </p>
       </label>
 
       {/* 근무 지역 */}
       <div>
-        <p className="mb-2 font-semibold text-gray-700">
+        <p className="mb-3 text-sm font-semibold text-gray-700 sm:text-base">
           근무 지역
         </p>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* 시·도 */}
           <label className="block">
             <span className="mb-2 block text-sm font-medium text-gray-600">
@@ -309,7 +325,9 @@ export default function EditJobForm({
                 )
               }
               required
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+              className={
+                selectClass
+              }
             >
               <option value="">
                 시·도를 선택해주세요
@@ -343,7 +361,7 @@ export default function EditJobForm({
               }
               required
               disabled={!location}
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
+              className={`${selectClass} disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400`}
             >
               <option value="">
                 {location
@@ -361,9 +379,7 @@ export default function EditJobForm({
                       subRegion
                     }
                   >
-                    {
-                      subRegion
-                    }
+                    {subRegion}
                   </option>
                 )
               )}
@@ -374,7 +390,7 @@ export default function EditJobForm({
 
       {/* 장비 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           장비
         </span>
 
@@ -386,7 +402,7 @@ export default function EditJobForm({
             )
           }
           required
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className={selectClass}
         >
           <option value="">
             장비를 선택해주세요
@@ -426,10 +442,11 @@ export default function EditJobForm({
         </select>
       </label>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      {/* 급여 / 경력 */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
         {/* 급여 */}
         <label className="block">
-          <span className="mb-2 block font-semibold text-gray-700">
+          <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
             급여
           </span>
 
@@ -443,13 +460,13 @@ export default function EditJobForm({
             }
             placeholder="예: 월 400만원 / 일급 20만원"
             required
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+            className={inputClass}
           />
         </label>
 
         {/* 경력 */}
         <label className="block">
-          <span className="mb-2 block font-semibold text-gray-700">
+          <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
             경력
           </span>
 
@@ -461,7 +478,9 @@ export default function EditJobForm({
               )
             }
             required
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+            className={
+              selectClass
+            }
           >
             <option value="">
               경력을 선택해주세요
@@ -494,10 +513,11 @@ export default function EditJobForm({
         </label>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      {/* 근무 형태 / 근무일 */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
         {/* 근무 형태 */}
         <label className="block">
-          <span className="mb-2 block font-semibold text-gray-700">
+          <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
             근무 형태
           </span>
 
@@ -510,13 +530,13 @@ export default function EditJobForm({
               )
             }
             placeholder="예: 정규직 / 일용직 / 계약직"
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+            className={inputClass}
           />
         </label>
 
         {/* 근무일 */}
         <label className="block">
-          <span className="mb-2 block font-semibold text-gray-700">
+          <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
             근무일
           </span>
 
@@ -529,14 +549,14 @@ export default function EditJobForm({
               )
             }
             placeholder="예: 월~토 / 주 5일"
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+            className={inputClass}
           />
         </label>
       </div>
 
       {/* 숙식 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           숙식 제공
         </span>
 
@@ -549,13 +569,13 @@ export default function EditJobForm({
             )
           }
           placeholder="예: 숙식 제공 / 숙소 제공 / 제공 안 함"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className={inputClass}
         />
       </label>
 
       {/* 상세 내용 */}
       <label className="block">
-        <span className="mb-2 block font-semibold text-gray-700">
+        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
           상세 내용
         </span>
 
@@ -568,12 +588,12 @@ export default function EditJobForm({
           }
           placeholder="근무 조건, 업무 내용, 현장 정보 등을 입력해주세요."
           rows={7}
-          className="w-full resize-none rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+          className="w-full resize-y rounded-xl border border-gray-300 bg-white px-4 py-3 text-base leading-7 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
         />
       </label>
 
       {/* 급구 */}
-      <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-orange-200 bg-orange-50 p-4">
+      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-orange-200 bg-orange-50 p-4 transition hover:border-orange-300 sm:items-center">
         <input
           type="checkbox"
           checked={urgent}
@@ -582,7 +602,7 @@ export default function EditJobForm({
               e.target.checked
             )
           }
-          className="h-5 w-5 accent-orange-500"
+          className="mt-0.5 h-6 w-6 shrink-0 accent-orange-500 sm:mt-0"
         />
 
         <div>
@@ -590,29 +610,43 @@ export default function EditJobForm({
             급구 공고로 설정
           </p>
 
-          <p className="mt-1 text-sm text-gray-500">
-            빠르게 기사를 구해야 하는 경우 선택해주세요.
+          <p className="mt-1 text-sm leading-6 text-gray-500">
+            빠르게 기사를 구해야 하는 경우
+            선택해주세요.
           </p>
         </div>
       </label>
 
       {/* 오류 */}
       {errorMessage && (
-        <div className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium leading-6 text-red-600">
           {errorMessage}
         </div>
       )}
 
-      {/* 수정 */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full rounded-xl bg-orange-500 px-6 py-4 text-lg font-bold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-gray-300"
-      >
-        {loading
-          ? "수정 중..."
-          : "공고 수정하기"}
-      </button>
+      {/* 버튼 */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          onClick={() =>
+            router.back()
+          }
+          disabled={loading}
+          className="min-h-14 w-full rounded-xl border border-gray-300 bg-white px-6 py-4 text-base font-bold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:text-lg"
+        >
+          취소
+        </button>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="min-h-14 w-full rounded-xl bg-orange-500 px-6 py-4 text-base font-bold text-white transition hover:bg-orange-600 active:bg-orange-700 disabled:cursor-not-allowed disabled:bg-gray-300 sm:text-lg"
+        >
+          {loading
+            ? "수정 중..."
+            : "공고 수정하기"}
+        </button>
+      </div>
     </form>
   );
 }

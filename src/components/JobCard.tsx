@@ -14,19 +14,25 @@ type JobCardProps = {
   createdAt?: string | null;
 };
 
-function getRelativeDate(createdAt?: string | null) {
+function getRelativeDate(
+  createdAt?: string | null
+) {
   if (!createdAt) {
     return "";
   }
 
-  const createdDate = new Date(createdAt);
+  const createdDate =
+    new Date(createdAt);
+
   const now = new Date();
 
   const diffMs =
-    now.getTime() - createdDate.getTime();
+    now.getTime() -
+    createdDate.getTime();
 
   const diffDays = Math.floor(
-    diffMs / (1000 * 60 * 60 * 24)
+    diffMs /
+      (1000 * 60 * 60 * 24)
   );
 
   if (diffDays <= 0) {
@@ -87,73 +93,87 @@ export default function JobCard({
     getRelativeDate(createdAt);
 
   return (
-    <div
-      className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition ${
+    <article
+      className={`flex h-full min-w-0 flex-col rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition sm:p-6 ${
         isClosed
           ? "opacity-60"
-          : "hover:-translate-y-1 hover:shadow-md"
+          : "hover:border-orange-200 hover:shadow-md"
       }`}
     >
       {/* 배지 */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
         {isNew && !isClosed && (
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-600">
+          <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-600 sm:px-3">
             NEW
           </span>
         )}
 
         {urgent && !isClosed && (
-          <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600">
+          <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-bold text-orange-600 sm:px-3">
             급구
           </span>
         )}
 
         {isClosed ? (
-          <span className="rounded-full bg-gray-200 px-3 py-1 text-xs font-bold text-gray-600">
+          <span className="rounded-full bg-gray-200 px-2.5 py-1 text-xs font-bold text-gray-600 sm:px-3">
             마감
           </span>
         ) : (
-          <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
+          <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-700 sm:px-3">
             모집중
           </span>
         )}
 
         {equipment && (
-          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+          <span className="max-w-full truncate rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600 sm:px-3">
             {equipment}
           </span>
         )}
       </div>
 
+      {/* 공고 내용 */}
       <Link
         href={`/jobs/${id}`}
-        className="block"
+        className="block min-w-0 flex-1"
       >
-        <h3 className="mt-4 text-xl font-bold text-gray-900">
+        <h3 className="mt-4 break-words text-lg font-bold leading-snug text-gray-900 sm:text-xl">
           {title}
         </h3>
 
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 break-words text-sm text-gray-500">
           {company}
         </p>
 
-        <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
-          {location && (
-            <span>{location}</span>
-          )}
+        {/* 지역 / 경력 */}
+        {(location || experience) && (
+          <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm leading-6 text-gray-600">
+            {location && (
+              <span className="break-words">
+                {location}
+              </span>
+            )}
 
-          {experience && (
-            <>
-              <span>·</span>
+            {location &&
+              experience && (
+                <span
+                  aria-hidden="true"
+                  className="text-gray-300"
+                >
+                  ·
+                </span>
+              )}
+
+            {experience && (
               <span>
                 {experience}
               </span>
-            </>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
+        {/* 급여 */}
         <p
-          className={`mt-5 font-bold ${
+          className={`mt-5 break-words text-lg font-bold ${
             isClosed
               ? "text-gray-500"
               : "text-orange-600"
@@ -164,38 +184,38 @@ export default function JobCard({
 
         {/* 등록일 */}
         {relativeDate && (
-          <p className="mt-3 text-xs text-gray-400">
+          <p className="mt-2 text-xs text-gray-400 sm:mt-3">
             {relativeDate}
           </p>
         )}
       </Link>
 
       {/* 버튼 */}
-      <div className="mt-6 grid grid-cols-2 gap-2">
+      <div className="mt-5 grid grid-cols-1 gap-2 sm:mt-6 sm:grid-cols-2">
         <Link
           href={`/jobs/${id}`}
-          className="flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-700 transition hover:bg-gray-50"
+          className="flex min-h-12 w-full items-center justify-center rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-700 transition hover:bg-gray-50 active:bg-gray-100"
         >
           공고 보기
         </Link>
 
         {isClosed ? (
-          <span className="flex cursor-not-allowed items-center justify-center rounded-lg bg-gray-200 px-4 py-3 text-sm font-bold text-gray-500">
+          <span className="flex min-h-12 w-full cursor-not-allowed items-center justify-center rounded-xl bg-gray-200 px-4 py-3 text-sm font-bold text-gray-500">
             모집 마감
           </span>
         ) : contactPhone ? (
           <a
             href={phoneLink}
-            className="flex items-center justify-center rounded-lg bg-orange-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-orange-600"
+            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-orange-500 px-4 py-3 text-sm font-bold text-white transition hover:bg-orange-600 active:bg-orange-700"
           >
             ☎ 전화 문의
           </a>
         ) : (
-          <span className="flex cursor-not-allowed items-center justify-center rounded-lg bg-gray-100 px-4 py-3 text-sm font-bold text-gray-400">
+          <span className="flex min-h-12 w-full cursor-not-allowed items-center justify-center rounded-xl bg-gray-100 px-4 py-3 text-sm font-bold text-gray-400">
             연락처 미등록
           </span>
         )}
       </div>
-    </div>
+    </article>
   );
 }
