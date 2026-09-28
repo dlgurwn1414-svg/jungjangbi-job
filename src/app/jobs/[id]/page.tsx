@@ -135,12 +135,6 @@ export default async function JobDetailPage({
                   </span>
                 )}
 
-                {job.urgent &&
-                  !isClosed && (
-                    <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600 sm:text-sm">
-                      급구
-                    </span>
-                  )}
               </div>
 
               <p className="text-sm text-gray-400">

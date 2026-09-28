@@ -8,7 +8,6 @@ type JobCardProps = {
   equipment: string;
   salary: string;
   experience: string;
-  urgent: boolean;
   status?: string;
   contactPhone?: string | null;
   createdAt?: string | null;
@@ -60,7 +59,6 @@ export default function JobCard({
   equipment,
   salary,
   experience,
-  urgent,
   status = "open",
   contactPhone,
   createdAt,
@@ -108,11 +106,7 @@ export default function JobCard({
           </span>
         )}
 
-        {urgent && !isClosed && (
-          <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-bold text-orange-600 sm:px-3">
-            급구
-          </span>
-        )}
+        
 
         {isClosed ? (
           <span className="rounded-full bg-gray-200 px-2.5 py-1 text-xs font-bold text-gray-600 sm:px-3">

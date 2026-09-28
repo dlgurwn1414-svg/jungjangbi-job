@@ -26,7 +26,7 @@ type EditJobFormProps = {
     work_days: string | null;
     accommodation: string | null;
     description: string | null;
-    urgent: boolean | null;
+    urgent: false,
   };
 };
 
@@ -106,10 +106,6 @@ export default function EditJobForm({
     job.description || ""
   );
 
-  const [urgent, setUrgent] =
-    useState(
-      job.urgent ?? false
-    );
 
   const [loading, setLoading] =
     useState(false);
@@ -197,7 +193,7 @@ export default function EditJobForm({
           description:
             description.trim(),
 
-          urgent,
+          urgent: false,
         })
         .eq("id", job.id)
         .eq(
@@ -592,30 +588,7 @@ export default function EditJobForm({
         />
       </label>
 
-      {/* 급구 */}
-      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-orange-200 bg-orange-50 p-4 transition hover:border-orange-300 sm:items-center">
-        <input
-          type="checkbox"
-          checked={urgent}
-          onChange={(e) =>
-            setUrgent(
-              e.target.checked
-            )
-          }
-          className="mt-0.5 h-6 w-6 shrink-0 accent-orange-500 sm:mt-0"
-        />
-
-        <div>
-          <p className="font-bold text-gray-900">
-            급구 공고로 설정
-          </p>
-
-          <p className="mt-1 text-sm leading-6 text-gray-500">
-            빠르게 기사를 구해야 하는 경우
-            선택해주세요.
-          </p>
-        </div>
-      </label>
+     
 
       {/* 오류 */}
       {errorMessage && (

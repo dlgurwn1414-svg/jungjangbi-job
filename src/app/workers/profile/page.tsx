@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WorkerProfileForm from "@/components/WorkerProfileForm";
 import { createClient } from "@/lib/supabase/server";
+import PromotionGuide from "@/components/PromotionGuide";
 
 export default async function WorkerProfilePage() {
   const supabase = await createClient();

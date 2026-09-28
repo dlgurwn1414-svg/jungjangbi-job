@@ -6,6 +6,23 @@ import WorkerRegionSelects from "@/components/WorkerRegionSelects";
 
 import { createClient } from "@/lib/supabase/server";
 
+function isPromotionActive(
+  promotionExpiresAt:
+    | string
+    | null
+    | undefined
+) {
+  if (!promotionExpiresAt) {
+    return false;
+  }
+
+  return (
+    new Date(
+      promotionExpiresAt
+    ).getTime() > Date.now()
+  );
+}
+
 type WorkersPageProps = {
   searchParams: Promise<{
     region?: string;
@@ -82,6 +99,57 @@ export default async function WorkersPage({
     data: workers,
     error,
   } = await query;
+
+  const sortedWorkers = [
+  ...(workers ?? []),
+].sort((a, b) => {
+  const aPromoted =
+    isPromotionActive(
+      a.promotion_expires_at
+    );
+
+  const bPromoted =
+    isPromotionActive(
+      b.promotion_expires_at
+    );
+
+  if (aPromoted !== bPromoted) {
+    return aPromoted ? -1 : 1;
+  }
+
+  if (aPromoted && bPromoted) {
+    const aTime = new Date(
+      a.promotion_expires_at ?? 0
+    ).getTime();
+
+    const bTime = new Date(
+      b.promotion_expires_at ?? 0
+    ).getTime();
+
+    if (aTime !== bTime) {
+      return bTime - aTime;
+    }
+  }
+
+  const aFavorite =
+    a.favorite_count ?? 0;
+
+  const bFavorite =
+    b.favorite_count ?? 0;
+
+  if (aFavorite !== bFavorite) {
+    return bFavorite - aFavorite;
+  }
+
+  return (
+    new Date(
+      b.created_at
+    ).getTime() -
+    new Date(
+      a.created_at
+    ).getTime()
+  );
+});
 
   if (error) {
     console.error(
@@ -322,25 +390,38 @@ export default async function WorkersPage({
           ) : (
             /* 기사 카드 */
             <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-              {workers.map(
-                (
-                  worker,
-                  index
-                ) => {
+              {sortedWorkers.map(
+  (worker, index) => {
                   const favoriteCount =
                     worker.favorite_count ??
                     0;
+                    const isPromoted =
+  isPromotionActive(
+    worker.promotion_expires_at
+  );
 
-                  return (
-                    <Link
-                      key={
-                        worker.id
-                      }
-                      href={`/workers/${worker.id}`}
-                      className="group relative min-w-0 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-orange-200 hover:shadow-md sm:p-6 lg:hover:-translate-y-1"
-                    >
+                 return (
+  <div
+    key={worker.id}
+    className={`relative rounded-2xl ${
+      isPromoted
+        ? "ring-2 ring-orange-400"
+        : ""
+    }`}
+  >
+    {isPromoted && (
+      <span className="absolute -top-2 left-4 z-10 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
+        추천
+      </span>
+    )}
+
+    <Link
+      href={`/workers/${worker.id}`}
+      className="group relative block min-w-0 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-orange-200 hover:shadow-md sm:p-6 lg:hover:-translate-y-1"
+    >
                       {/* 배지 */}
                       <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        
                         {favoriteCount >
                           0 && (
                           <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-bold text-orange-600 sm:px-3">
@@ -472,7 +553,8 @@ export default async function WorkersPage({
                           </p>
                         </div>
                       </div>
-                    </Link>
+                  </Link>
+</div>
                   );
                 }
               )}

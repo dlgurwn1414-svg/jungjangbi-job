@@ -1,5 +1,5 @@
 "use client";
-
+import PromotionGuide from "@/components/PromotionGuide";
 import {
   FormEvent,
   useState,
@@ -67,8 +67,15 @@ export default function NewJobForm() {
     setDescription,
   ] = useState("");
 
-  const [urgent, setUrgent] =
-    useState(false);
+ const [
+  usePromotion,
+  setUsePromotion,
+] = useState(false);
+
+const [
+  promotionDays,
+  setPromotionDays,
+] = useState<7 | 30 | null>(null);
 
   const [loading, setLoading] =
     useState(false);
@@ -103,10 +110,20 @@ export default function NewJobForm() {
   ) => {
     event.preventDefault();
 
-    if (loading) return;
+   if (loading) return;
 
-    setLoading(true);
-    setErrorMessage("");
+if (
+  usePromotion &&
+  promotionDays === null
+) {
+  setErrorMessage(
+    "추천 기간을 7일 또는 30일 중에서 선택해주세요."
+  );
+  return;
+}
+
+setLoading(true);
+setErrorMessage("");
 
     const {
       data: { user },
@@ -148,7 +165,7 @@ export default function NewJobForm() {
         description:
           description.trim(),
 
-        urgent,
+        urgent: false,
         status: "open",
       })
       .select("id")
@@ -171,6 +188,33 @@ export default function NewJobForm() {
     router.push(
       `/jobs/${insertedJob.id}`
     );
+
+    if (
+  usePromotion &&
+  promotionDays !== null
+) {
+  const {
+    error: promotionError,
+  } = await supabase
+    .from("promotion_requests")
+    .insert({
+      user_id: user.id,
+      target_type: "job",
+      target_id: insertedJob.id,
+      days: promotionDays,
+    });
+
+  if (promotionError) {
+    console.error(
+      "추천 신청 저장 오류:",
+      promotionError
+    );
+
+    alert(
+      "공고는 등록되었지만 추천 신청 저장에 실패했습니다."
+    );
+  }
+}
 
     router.refresh();
   };
@@ -521,51 +565,62 @@ export default function NewJobForm() {
       </label>
 
       {/* 상세 내용 */}
-      <label className="block">
-        <span className="mb-2 block text-sm font-semibold text-gray-700 sm:text-base">
-          상세 내용
-        </span>
+<label className="block">
+  <span className="mb-2 block font-semibold text-gray-700">
+    상세 내용
+  </span>
 
-        <textarea
-          value={description}
-          onChange={(e) =>
-            setDescription(
-              e.target.value
-            )
-          }
-          placeholder="근무 조건, 업무 내용, 현장 정보 등을 입력해주세요."
-          rows={7}
-          className="w-full resize-y rounded-xl border border-gray-300 bg-white px-4 py-3 text-base leading-7 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
-        />
-      </label>
+  <textarea
+    value={description}
+    onChange={(e) =>
+      setDescription(e.target.value)
+    }
+    placeholder="근무 조건, 업무 내용, 현장 정보 등을 입력해주세요."
+    rows={7}
+    className="w-full resize-none rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-orange-500"
+  />
+</label>
 
-      {/* 급구 */}
-      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-orange-200 bg-orange-50 p-4 transition hover:border-orange-300 sm:items-center">
-        <input
-          type="checkbox"
-          checked={urgent}
-          onChange={(e) =>
-            setUrgent(
-              e.target.checked
-            )
-          }
-          className="mt-0.5 h-6 w-6 shrink-0 accent-orange-500 sm:mt-0"
-        />
+{/* 추천 노출 선택 */}
+<div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 sm:p-5">
+  <label className="flex cursor-pointer items-start gap-3">
+    <input
+      type="checkbox"
+      checked={usePromotion}
+      onChange={(e) => {
+        const checked = e.target.checked;
 
-        <div>
-          <p className="font-bold text-gray-900">
-            급구 공고로 등록
-          </p>
+        setUsePromotion(checked);
 
-          <p className="mt-1 text-sm leading-6 text-gray-500">
-            빠르게 기사를 구해야 하는 경우
-            선택해주세요.
-          </p>
-        </div>
-      </label>
+        if (!checked) {
+          setPromotionDays(null);
+        }
+      }}
+      className="mt-0.5 h-5 w-5 shrink-0 accent-orange-500"
+    />
 
-      {/* 오류 메시지 */}
-      {errorMessage && (
+    <div>
+      <p className="font-bold text-gray-900">
+        추천으로 등록하기
+      </p>
+
+      <p className="mt-1 text-sm leading-6 text-gray-500">
+        추천 게시물은 상단에 등록됩니다.
+      </p>
+    </div>
+  </label>
+</div>
+
+{usePromotion && (
+  <PromotionGuide
+    targetLabel="채용 공고"
+    selectedDays={promotionDays}
+    onSelect={setPromotionDays}
+  />
+)}
+
+{/* 오류 메시지 */}
+{errorMessage && (
         <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium leading-6 text-red-600">
           {errorMessage}
         </div>

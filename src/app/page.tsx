@@ -1,10 +1,10 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import UrgentJobs from "@/components/UrgentJobs";
 import WorkerCTA from "@/components/WorkerCTA";
 import EquipmentCategories from "@/components/EquipmentCategories";
 import Footer from "@/components/Footer";
 import PopularWorkers from "@/components/PopularWorkers";
+import RecommendedJobs from "@/components/RecommendedJobs";
 
 export default function Home() {
   return (
@@ -13,8 +13,8 @@ export default function Home() {
 
       <main>
         <HeroSection />
-        <UrgentJobs />
         <PopularWorkers />
+        <RecommendedJobs />
         <WorkerCTA />
         <EquipmentCategories />
       </main>

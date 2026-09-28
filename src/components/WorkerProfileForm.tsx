@@ -4,7 +4,7 @@ import {
   FormEvent,
   useState,
 } from "react";
-
+import PromotionGuide from "@/components/PromotionGuide";
 import { useRouter } from "next/navigation";
 
 import {
@@ -103,6 +103,15 @@ export default function WorkerProfileForm({
     initialProfile?.introduction ||
       ""
   );
+  const [
+  usePromotion,
+  setUsePromotion,
+] = useState(false);
+
+const [
+  promotionDays,
+  setPromotionDays,
+] = useState<7 | 30 | null>(null);
 
   const [loading, setLoading] =
     useState(false);
@@ -146,6 +155,15 @@ export default function WorkerProfileForm({
     if (loading) {
       return;
     }
+    if (
+  usePromotion &&
+  promotionDays === null
+) {
+  setErrorMessage(
+    "추천 기간을 7일 또는 30일 중에서 선택해주세요."
+  );
+  return;
+}
 
     setLoading(true);
     setErrorMessage("");
@@ -196,30 +214,56 @@ export default function WorkerProfileForm({
         introduction.trim(),
     };
 
-    const { error } =
-      await supabase
-        .from("worker_profiles")
-        .upsert(
-          profileData,
-          {
-            onConflict:
-              "user_id",
-          }
-        );
-
-    if (error) {
-      console.error(
-        "기사 프로필 저장 오류:",
-        error
-      );
-
-      setErrorMessage(
-        "기사 프로필 저장 중 오류가 발생했습니다. 다시 시도해주세요."
-      );
-
-      setLoading(false);
-      return;
+    const {
+  data: savedProfile,
+  error,
+} = await supabase
+  .from("worker_profiles")
+  .upsert(
+    profileData,
+    {
+      onConflict: "user_id",
     }
+  )
+  .select("id")
+  .single();
+
+  if (!savedProfile) {
+  setErrorMessage(
+    "기사 프로필 저장 결과를 확인할 수 없습니다."
+  );
+  setLoading(false);
+  return;
+}
+    if (
+  usePromotion &&
+  promotionDays !== null
+) {
+  const {
+    error: promotionError,
+  } = await supabase
+    .from("promotion_requests")
+    .insert({
+      user_id: userId,
+      target_type: "worker",
+      target_id: savedProfile.id,
+      days: promotionDays,
+    });
+
+  if (promotionError) {
+    console.error(
+      "추천 신청 저장 오류:",
+      promotionError
+    );
+
+    setErrorMessage(
+      "기사 프로필은 저장되었지만 추천 신청 저장에 실패했습니다."
+    );
+
+    setLoading(false);
+    return;
+  }
+}
 
     setSuccessMessage(
       initialProfile
@@ -521,6 +565,39 @@ export default function WorkerProfileForm({
           className="w-full resize-y rounded-xl border border-gray-300 bg-white px-4 py-3 text-base leading-7 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
         />
       </label>
+      {/* 추천 노출 선택 */}
+<div className="rounded-2xl border border-gray-200 bg-gray-50 p-4 sm:p-5">
+  <label className="flex cursor-pointer items-start gap-3">
+    <input
+      type="checkbox"
+      checked={usePromotion}
+      onChange={(e) =>
+        setUsePromotion(
+          e.target.checked
+        )
+      }
+      className="mt-0.5 h-5 w-5 shrink-0 accent-orange-500"
+    />
+
+    <div>
+      <p className="font-bold text-gray-900">
+        추천으로 등록하기
+      </p>
+
+      <p className="mt-1 text-sm leading-6 text-gray-500">
+        추천 프로필은 상단에 등록됩니다.
+      </p>
+    </div>
+  </label>
+</div>
+
+{usePromotion && (
+  <PromotionGuide
+    targetLabel="기사 프로필"
+    selectedDays={promotionDays}
+    onSelect={setPromotionDays}
+  />
+)}
 
       {/* 오류 */}
       {errorMessage && (

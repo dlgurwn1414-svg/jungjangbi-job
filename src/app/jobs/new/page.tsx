@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewJobForm from "@/components/NewJobForm";
 
+
 export default function NewJobPage() {
   return (
     <>
@@ -24,10 +25,12 @@ export default function NewJobPage() {
             </p>
           </div>
 
-          {/* 공고 등록 폼 */}
-          <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:mt-8 sm:p-6 md:p-8">
-            <NewJobForm />
-          </div>
+
+{/* 공고 등록 폼 */}
+<div className="mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:mt-8 sm:p-6 md:p-8">
+  <NewJobForm />
+</div>
+
         </div>
       </main>
 

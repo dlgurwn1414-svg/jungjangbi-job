@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import LogoutButton from "@/components/LogoutButton";
@@ -60,16 +61,32 @@ export default async function Header() {
 
   return (
     <header className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-3 px-4 py-2 sm:px-6">
         {/* 로고 */}
         <Link
           href="/"
-          className="shrink-0 text-2xl font-black text-gray-900"
+          className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-3"
         >
-          중장비
-          <span className="text-orange-500">
-            JOB
-          </span>
+          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white sm:h-12 sm:w-12">
+            <Image
+              src="/logo.png"
+              alt="중장비 일터 로고"
+              fill
+              sizes="48px"
+              className="object-cover"
+              priority
+            />
+          </div>
+
+          <div className="flex min-w-0 items-baseline whitespace-nowrap">
+            <span className="text-lg font-black tracking-tight text-slate-900 sm:text-2xl">
+              중장비
+            </span>
+
+            <span className="ml-1 text-lg font-black tracking-tight text-orange-500 sm:text-2xl">
+              일터
+            </span>
+          </div>
         </Link>
 
         {/* PC 메뉴 */}
@@ -103,13 +120,13 @@ export default async function Header() {
           </Link>
 
           {isAdmin && (
-            <Link
-              href="/admin/jobs"
-              className="whitespace-nowrap rounded-lg bg-red-50 px-4 py-2 font-bold text-red-600 transition hover:bg-red-100"
-            >
-              관리자
-            </Link>
-          )}
+  <a
+    href="/admin/jobs"
+    className="whitespace-nowrap rounded-lg bg-red-50 px-4 py-2 font-bold text-red-600 transition hover:bg-red-100"
+  >
+    관리자
+  </a>
+)}
         </nav>
 
         {/* PC 로그인 영역 */}
@@ -154,13 +171,15 @@ export default async function Header() {
         </div>
 
         {/* 모바일 */}
-        <MobileMenu
-          loggedIn={!!user}
-          isAdmin={isAdmin}
-          newApplicantCount={
-            newApplicantCount
-          }
-        />
+        <div className="shrink-0 lg:hidden">
+          <MobileMenu
+            loggedIn={!!user}
+            isAdmin={isAdmin}
+            newApplicantCount={
+              newApplicantCount
+            }
+          />
+        </div>
       </div>
     </header>
   );

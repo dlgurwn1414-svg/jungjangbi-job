@@ -11,6 +11,23 @@ import {
   type Region,
 } from "@/lib/regions";
 
+function isPromotionActive(
+  promotionExpiresAt:
+    | string
+    | null
+    | undefined
+) {
+  if (!promotionExpiresAt) {
+    return false;
+  }
+
+  return (
+    new Date(
+      promotionExpiresAt
+    ).getTime() > Date.now()
+  );
+}
+
 type JobsPageProps = {
   searchParams: Promise<{
     keyword?: string;
@@ -160,46 +177,87 @@ export default async function JobsPage({
     );
   }
 
-  // 급구 우선
-  query = query.order(
-    "urgent",
-    {
-      ascending: false,
-    }
-  );
+  const {
+  data: allJobs,
+  count,
+  error,
+} = await query;
 
-  // 정렬
-  if (sort === "popular") {
-    query = query
-      .order(
-        "view_count",
-        {
-          ascending: false,
-        }
-      )
-      .order(
-        "created_at",
-        {
-          ascending: false,
-        }
-      );
-  } else {
-    query = query.order(
-      "created_at",
-      {
-        ascending: false,
-      }
+if (error) {
+  console.error(
+    "공고 목록 조회 오류:",
+    error
+  );
+}
+
+const sortedJobs = [
+  ...(allJobs ?? []),
+].sort((a, b) => {
+  const aPromoted =
+    isPromotionActive(
+      a.promotion_expires_at
     );
+
+  const bPromoted =
+    isPromotionActive(
+      b.promotion_expires_at
+    );
+
+  // 추천 공고 최우선
+  if (aPromoted !== bPromoted) {
+    return aPromoted ? -1 : 1;
   }
 
-  const {
-    data: jobs,
-    count,
-    error,
-  } = await query.range(
-    from,
-    to
+  // 추천 공고끼리는 종료일이 더 뒤인 공고 우선
+  if (aPromoted && bPromoted) {
+    const aPromotionTime =
+      new Date(
+        a.promotion_expires_at ?? 0
+      ).getTime();
+
+    const bPromotionTime =
+      new Date(
+        b.promotion_expires_at ?? 0
+      ).getTime();
+
+    if (
+      aPromotionTime !==
+      bPromotionTime
+    ) {
+      return (
+        bPromotionTime -
+        aPromotionTime
+      );
+    }
+  }
+
+  // 일반 공고 정렬
+  if (sort === "popular") {
+    const aViews =
+      a.view_count ?? 0;
+
+    const bViews =
+      b.view_count ?? 0;
+
+    if (aViews !== bViews) {
+      return bViews - aViews;
+    }
+  }
+
+  return (
+    new Date(
+      b.created_at
+    ).getTime() -
+    new Date(
+      a.created_at
+    ).getTime()
   );
+});
+
+const jobs = sortedJobs.slice(
+  from,
+  to + 1
+);
 
   if (error) {
     console.error(
@@ -629,58 +687,62 @@ export default async function JobsPage({
           ) : (
             /* 공고 목록 */
             <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {jobs.map(
-                (job) => (
-                  <JobCard
-                    key={
-                      job.id
-                    }
-                    id={
-                      job.id
-                    }
-                    title={
-                      job.title ??
-                      ""
-                    }
-                    company={
-                      job.company ??
-                      ""
-                    }
-                    location={
-                      job.sub_location
-                        ? `${job.location ?? ""} ${job.sub_location}`
-                        : job.location ??
-                          ""
-                    }
-                    equipment={
-                      job.equipment ??
-                      ""
-                    }
-                    salary={
-                      job.salary ??
-                      ""
-                    }
-                    experience={
-                      job.experience ??
-                      ""
-                    }
-                    urgent={
-                      job.urgent ??
-                      false
-                    }
-                    status={
-                      job.status ??
-                      "open"
-                    }
-                    contactPhone={
-                      job.contact_phone
-                    }
-                    createdAt={
-                      job.created_at
-                    }
-                  />
-                )
-              )}
+             {jobs.map((job) => {
+  const isPromoted =
+    isPromotionActive(
+      job.promotion_expires_at
+    );
+
+  return (
+    <div
+      key={job.id}
+      className={`relative rounded-2xl ${
+        isPromoted
+          ? "ring-2 ring-orange-400"
+          : ""
+      }`}
+    >
+      {isPromoted && (
+        <span className="absolute -top-2 left-4 z-10 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold text-white shadow-sm">
+          추천
+        </span>
+      )}
+
+      <JobCard
+        id={job.id}
+        title={
+          job.title ?? ""
+        }
+        company={
+          job.company ?? ""
+        }
+        location={
+          job.sub_location
+            ? `${job.location ?? ""} ${job.sub_location}`
+            : job.location ?? ""
+        }
+        equipment={
+          job.equipment ?? ""
+        }
+        salary={
+          job.salary ?? ""
+        }
+        experience={
+          job.experience ?? ""
+        }
+        status={
+          job.status ?? "open"
+        }
+        contactPhone={
+          job.contact_phone
+        }
+        createdAt={
+          job.created_at
+        }
+      />
+    </div>
+  );
+})}
             </div>
           )}
 
