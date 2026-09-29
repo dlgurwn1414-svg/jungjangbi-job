@@ -151,6 +151,13 @@ const [
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
+    const formData = new FormData(
+  event.currentTarget
+);
+
+const depositorName = String(
+  formData.get("depositor_name") ?? ""
+).trim();
 
     if (loading) {
       return;
@@ -240,15 +247,16 @@ const [
   promotionDays !== null
 ) {
   const {
-    error: promotionError,
-  } = await supabase
-    .from("promotion_requests")
-    .insert({
-      user_id: userId,
-      target_type: "worker",
-      target_id: savedProfile.id,
-      days: promotionDays,
-    });
+  error: promotionError,
+} = await supabase
+  .from("promotion_requests")
+  .insert({
+    user_id: userId,
+    target_type: "worker",
+    target_id: savedProfile.id,
+    days: promotionDays,
+    depositor_name: depositorName,
+  });
 
   if (promotionError) {
     console.error(

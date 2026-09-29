@@ -11,6 +11,13 @@ export default function PromotionGuide({
   selectedDays,
   onSelect,
 }: PromotionGuideProps) {
+  const selectedPrice =
+    selectedDays === 7
+      ? "9,900원"
+      : selectedDays === 30
+      ? "29,900원"
+      : null;
+
   return (
     <section className="rounded-2xl border border-orange-200 bg-orange-50 p-4 sm:p-6">
       <div>
@@ -88,6 +95,78 @@ export default function PromotionGuide({
           )}
         </button>
       </div>
+
+      {selectedDays !== null && (
+        <div className="mt-5 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h4 className="font-bold text-gray-900">
+              계좌이체 안내
+            </h4>
+
+            <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-700">
+              {selectedPrice}
+            </span>
+          </div>
+
+          <div className="mt-4 space-y-2 text-sm text-gray-700">
+            <p>
+              은행:{" "}
+              <span className="font-bold text-gray-900">
+                테스트은행
+              </span>
+            </p>
+
+            <p>
+              계좌번호:{" "}
+              <span className="font-bold text-gray-900">
+                000-0000-0000
+              </span>
+            </p>
+
+            <p>
+              예금주:{" "}
+              <span className="font-bold text-gray-900">
+                중장비 일터
+              </span>
+            </p>
+          </div>
+
+          {/* 입금자명 */}
+          <label className="mt-5 block">
+            <span className="mb-2 block text-sm font-bold text-gray-900">
+              입금자명
+            </span>
+
+            <input
+              type="text"
+              name="depositor_name"
+              placeholder="실제 입금하실 분의 이름을 입력해주세요"
+              maxLength={30}
+              required
+              className="min-h-12 w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+            />
+
+            <p className="mt-2 text-xs leading-5 text-gray-500">
+              회원 이름과 입금자명이 다를 경우에도 실제 계좌에 표시되는
+              입금자명을 적어주세요.
+            </p>
+          </label>
+
+          <div className="mt-4 rounded-xl bg-gray-50 p-3">
+            <p className="text-sm font-semibold text-gray-700">
+              선택한 추천 상품
+            </p>
+
+            <p className="mt-1 text-lg font-black text-orange-600">
+              {selectedDays}일 · {selectedPrice}
+            </p>
+          </div>
+
+          <p className="mt-4 text-xs leading-5 text-gray-500">
+            입금 확인 후 관리자가 추천 노출을 적용합니다.
+          </p>
+        </div>
+      )}
 
       <p className="mt-4 text-xs leading-5 text-gray-500">
         추천 신청 후 확인이 완료되면 추천 노출이 적용됩니다.

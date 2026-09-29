@@ -119,13 +119,29 @@ export default async function Header() {
             기사 프로필 등록
           </Link>
 
+          <Link
+  href="/mypage/inquiries/new"
+  className="whitespace-nowrap font-medium text-gray-700 transition hover:text-orange-500"
+>
+  문의하기
+</Link>
+
           {isAdmin && (
-  <a
-    href="/admin/jobs"
-    className="whitespace-nowrap rounded-lg bg-red-50 px-4 py-2 font-bold text-red-600 transition hover:bg-red-100"
-  >
-    관리자
-  </a>
+  <div className="flex items-center gap-2">
+    <Link
+      href="/admin/jobs"
+      className="whitespace-nowrap rounded-lg bg-red-50 px-4 py-2 font-bold text-red-600 transition hover:bg-red-100"
+    >
+      관리자
+    </Link>
+
+    <Link
+      href="/admin/inquiries"
+      className="whitespace-nowrap rounded-lg border border-red-200 bg-white px-4 py-2 font-bold text-red-600 transition hover:bg-red-50"
+    >
+      문의 관리
+    </Link>
+  </div>
 )}
         </nav>
 

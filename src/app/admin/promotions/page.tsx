@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import AdminApprovePromotionButton from "@/components/AdminApprovePromotionButton";
 import AdminRejectPromotionButton from "@/components/AdminRejectPromotionButton";
-
+import AdminConfirmPaymentButton from "@/components/AdminConfirmPaymentButton";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { createClient } from "@/lib/supabase/server";
@@ -13,6 +13,9 @@ type PromotionRequest = {
   target_type: "job" | "worker";
   target_id: number;
   days: number;
+  amount: number | null;
+  depositor_name: string | null;
+  payment_status: "unpaid" | "paid";
   status: string;
   created_at: string;
 };
@@ -97,15 +100,18 @@ export default async function AdminPromotionsPage() {
     error: requestError,
   } = await supabase
     .from("promotion_requests")
-    .select(`
-      id,
-      user_id,
-      target_type,
-      target_id,
-      days,
-      status,
-      created_at
-    `)
+  .select(`
+  id,
+  user_id,
+  target_type,
+  target_id,
+  days,
+  amount,
+  depositor_name,
+  payment_status,
+  status,
+  created_at
+`)
     .order("created_at", {
       ascending: false,
     });
@@ -322,24 +328,36 @@ export default async function AdminPromotionsPage() {
                     >
                       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                         <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span
-                              className={`rounded-full px-3 py-1 text-xs font-bold ${getStatusClass(
-                                request.status
-                              )}`}
-                            >
-                              {getStatusLabel(
-                                request.status
-                              )}
-                            </span>
+                         <div className="flex flex-wrap items-center gap-2">
+  <span
+    className={`rounded-full px-3 py-1 text-xs font-bold ${getStatusClass(
+      request.status
+    )}`}
+  >
+    {getStatusLabel(
+      request.status
+    )}
+  </span>
 
-                            <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-700">
-                              {request.target_type ===
-                              "job"
-                                ? "채용 공고"
-                                : "기사 프로필"}
-                            </span>
-                          </div>
+  <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-700">
+    {request.target_type ===
+    "job"
+      ? "채용 공고"
+      : "기사 프로필"}
+  </span>
+
+  <span
+    className={`rounded-full px-3 py-1 text-xs font-bold ${
+      request.payment_status === "paid"
+        ? "bg-green-100 text-green-700"
+        : "bg-gray-100 text-gray-600"
+    }`}
+  >
+    {request.payment_status === "paid"
+      ? "입금 완료"
+      : "미입금"}
+  </span>
+</div>
 
                           <h3 className="mt-4 break-words text-lg font-bold text-gray-900 sm:text-xl">
                             {request.target_type ===
@@ -386,13 +404,21 @@ export default async function AdminPromotionsPage() {
                                 일
                               </span>
                             </p>
-
                             <p>
-                              금액:{" "}
-                              <span className="font-bold text-orange-600">
-                                {price}
-                              </span>
-                            </p>
+  입금자명:{" "}
+  <span className="font-bold text-blue-700">
+    {request.depositor_name || "미입력"}
+  </span>
+</p>
+
+                          <p>
+  결제 금액:{" "}
+  <span className="font-bold text-orange-600">
+    {request.amount !== null
+      ? `${request.amount.toLocaleString()}원`
+      : price}
+  </span>
+</p>
 
                             <p>
                               신청일:{" "}
@@ -422,17 +448,25 @@ export default async function AdminPromotionsPage() {
       프로필 보기
     </Link>
   )}
-
-  {request.status === "pending" && (
-  <div className="flex w-full flex-col gap-2 sm:flex-row">
-    <AdminApprovePromotionButton
+{request.status === "pending" && (
+  <div className="flex w-full flex-col gap-2">
+    <AdminConfirmPaymentButton
       requestId={request.id}
-      days={request.days}
+      paymentStatus={
+        request.payment_status
+      }
     />
 
-    <AdminRejectPromotionButton
-      requestId={request.id}
-    />
+    <div className="flex w-full flex-col gap-2 sm:flex-row">
+      <AdminApprovePromotionButton
+        requestId={request.id}
+        days={request.days}
+      />
+
+      <AdminRejectPromotionButton
+        requestId={request.id}
+      />
+    </div>
   </div>
 )}
 </div>

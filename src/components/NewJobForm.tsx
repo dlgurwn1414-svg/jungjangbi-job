@@ -110,6 +110,14 @@ const [
   ) => {
     event.preventDefault();
 
+    const formData = new FormData(
+  event.currentTarget
+);
+
+const depositorName = String(
+  formData.get("depositor_name") ?? ""
+).trim();
+
    if (loading) return;
 
 if (
@@ -197,12 +205,14 @@ setErrorMessage("");
     error: promotionError,
   } = await supabase
     .from("promotion_requests")
-    .insert({
-      user_id: user.id,
-      target_type: "job",
-      target_id: insertedJob.id,
-      days: promotionDays,
-    });
+   .insert({
+  user_id: user.id,
+  target_type: "job",
+  target_id: insertedJob.id,
+  days: promotionDays,
+  depositor_name: depositorName,
+  status: "pending",
+})
 
   if (promotionError) {
     console.error(

@@ -47,6 +47,11 @@ export default function WorkerPromotionRequestButton({
     setSelectedDays,
   ] = useState<7 | 30 | null>(null);
 
+  const [
+    depositorName,
+    setDepositorName,
+  ] = useState("");
+
   const [loading, setLoading] =
     useState(false);
 
@@ -66,6 +71,13 @@ export default function WorkerPromotionRequestButton({
     if (selectedDays === null) {
       setMessage(
         "추천 기간을 선택해주세요."
+      );
+      return;
+    }
+
+    if (!depositorName.trim()) {
+      setMessage(
+        "입금자명을 입력해주세요."
       );
       return;
     }
@@ -131,6 +143,8 @@ export default function WorkerPromotionRequestButton({
           target_type: "worker",
           target_id: workerId,
           days: selectedDays,
+          depositor_name:
+            depositorName.trim(),
         });
 
     if (error) {
@@ -152,21 +166,22 @@ export default function WorkerPromotionRequestButton({
     );
 
     setSelectedDays(null);
+    setDepositorName("");
     setLoading(false);
   };
 
   return (
     <div className="w-full sm:w-auto">
       {hasPendingRequest ? (
-  <button
-    type="button"
-    disabled
-    className="min-h-10 w-full cursor-not-allowed rounded-lg bg-gray-200 px-4 py-2 text-sm font-bold text-gray-500 sm:w-auto"
-  >
-    승인 대기중
-  </button>
-) : !open ? (
-  <button
+        <button
+          type="button"
+          disabled
+          className="min-h-10 w-full cursor-not-allowed rounded-lg bg-gray-200 px-4 py-2 text-sm font-bold text-gray-500 sm:w-auto"
+        >
+          승인 대기중
+        </button>
+      ) : !open ? (
+        <button
           type="button"
           onClick={() => {
             setOpen(true);
@@ -227,6 +242,30 @@ export default function WorkerPromotionRequestButton({
             </button>
           </div>
 
+          <label className="mt-4 block">
+            <span className="mb-2 block text-sm font-bold text-gray-800">
+              입금자명
+            </span>
+
+            <input
+              type="text"
+              value={depositorName}
+              onChange={(e) =>
+                setDepositorName(
+                  e.target.value
+                )
+              }
+              placeholder="실제 입금자명을 입력해주세요"
+              maxLength={30}
+              className="min-h-11 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+            />
+
+            <p className="mt-2 text-xs leading-5 text-gray-500">
+              계좌에 표시되는 실제
+              입금자명을 입력해주세요.
+            </p>
+          </label>
+
           {message && (
             <p className="mt-3 text-sm font-medium text-orange-700">
               {message}
@@ -250,6 +289,7 @@ export default function WorkerPromotionRequestButton({
               onClick={() => {
                 setOpen(false);
                 setSelectedDays(null);
+                setDepositorName("");
                 setMessage("");
               }}
               disabled={loading}

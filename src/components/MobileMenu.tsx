@@ -95,9 +95,9 @@ export default function MobileMenu({
                 className="text-xl font-black text-gray-900"
               >
                 중장비
-                <span className="text-orange-500">
-                  JOB
-                </span>
+<span className="text-orange-500">
+  일터
+</span>
               </Link>
 
               <button
@@ -150,6 +150,14 @@ export default function MobileMenu({
                   기사 프로필 등록
                 </Link>
 
+                <Link
+  href="/mypage/inquiries/new"
+  onClick={closeMenu}
+  className="flex min-h-12 items-center rounded-xl px-4 py-3 text-base font-semibold text-gray-800 transition active:bg-gray-100"
+>
+  문의하기
+</Link>
+
                 {/* 관리자 전용 */}
                 {isAdmin && (
                   <>
@@ -168,12 +176,12 @@ export default function MobileMenu({
                     </Link>
 
                     <Link
-                      href="/admin/reports"
-                      onClick={closeMenu}
-                      className="mt-1 flex min-h-12 items-center rounded-xl px-4 py-3 text-base font-semibold text-red-600 transition active:bg-red-50"
-                    >
-                      신고 관리
-                    </Link>
+  href="/admin/inquiries"
+  onClick={closeMenu}
+  className="mt-1 flex min-h-12 items-center rounded-xl px-4 py-3 text-base font-semibold text-red-600 transition active:bg-red-50"
+>
+  문의 관리
+</Link>
                   </>
                 )}
 
@@ -234,7 +242,7 @@ export default function MobileMenu({
             {/* 하단 */}
             <div className="shrink-0 border-t border-gray-200 px-5 py-4">
               <p className="text-center text-xs text-gray-400">
-                중장비JOB
+                중장비 일터
               </p>
             </div>
           </div>
